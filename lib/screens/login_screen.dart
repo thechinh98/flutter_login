@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -81,7 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  logInSuccess(String userId, String password) {
+  logInSuccess(String userId, String password) async{
+    await Future.delayed(Duration(milliseconds: 700));
     LoginModel _loginModel =
     Provider.of<LoginModel>(context, listen: false);
     _loginModel.loginSuccess(userId, password);

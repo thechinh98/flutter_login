@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:service/service.dart';
 
+
 class LoginLogic{
   final BuildContext _context;
   final LoginService _service;

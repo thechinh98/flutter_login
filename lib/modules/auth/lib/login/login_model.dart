@@ -8,10 +8,14 @@ class LoginModel extends ChangeNotifier {
   Account account = new Account();
   LoginModel({this.isLogin = false});
 
-  void loginSuccess(String username, String password) async {
-    await Future.delayed(Duration(milliseconds: 500));
+  void loginSuccess(String username, String password){
     account.username = username;
     account.password = password;
+    notifyListeners();
+  }
+
+  void logOut() {
+    account = new Account();
     notifyListeners();
   }
 }
