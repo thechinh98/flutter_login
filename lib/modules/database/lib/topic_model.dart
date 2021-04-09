@@ -19,9 +19,9 @@ class TopicModel extends ChangeNotifier {
         topics.add(element);
       });
       print("CHINHLT: TOPIC MODEL - load data - successfully");
+      notifyListeners();
     } else {
       print("TOPIC MODEL: Fetching data fail ");
-      notifyListeners();
     }
     print("${topics.length}");
   }

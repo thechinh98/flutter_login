@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Xin chào, ${_loginModel.account.username ?? ''}", style: TextStyle(fontSize: 20),),
-                SizedBox(height: 150,),
+                SizedBox(height: 90,),
                 Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
