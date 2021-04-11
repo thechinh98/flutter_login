@@ -5,11 +5,13 @@ import 'package:flutter_login/navigation/root_router.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/providers/app_provider.dart';
 import 'package:flutter_login/screens/login_screen.dart';
+import 'package:game/repository/sql_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   SQLiteRepository sqLiteRepository = new SQLiteRepository();
   await sqLiteRepository.initDb();
+  await SqfliteRepository().initDb();
   await AppProvider().initApp();
   runApp(MyApp());
 }

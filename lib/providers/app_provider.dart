@@ -3,6 +3,8 @@ import 'package:database/database_service.dart';
 import 'package:database/firebase_data_service_impl.dart';
 import 'package:game/providers/audio_model.dart';
 import 'package:game/providers/study_game_model.dart';
+import 'package:game/service/game_service_impl.dart';
+import 'package:game/service/service.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:service/login/login_service_impl.dart';
@@ -31,8 +33,13 @@ class AppProvider {
   Future initApp() async {
     topicModel = TopicModel();
     loginModel = LoginModel();
+    audioModel = AudioModel();
+    final gameService = GameServiceImpl();
+    GameServiceInitializer().init(gameService);
+    studyGameModel = StudyGameModel();
     _dbService = FirebaseServiceImpl();
     _loginService = LoginServiceImpl(dbService);
+
 
   }
 

@@ -27,8 +27,8 @@ class SqfliteRepository {
   String appDbName = 'data-$DB_VERSION.db';
   String dataDbName = 'data.db';
   String userDbName = 'user_data.db';
-  
-  Database get moduleDB  => _db!;
+
+  Database get moduleDB => _db!;
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -122,7 +122,7 @@ class SqfliteRepository {
   Future<List<Question>> loadQuestionsByParentId(
       {required String parentId}) async {
     List<Question> result = [];
-
+    print("$parentId̉");
     final maps = await requestApi<List<Map>, List<Map>>(
       call: () => _db!.query(
         "$tableQuestion",
@@ -142,5 +142,27 @@ class SqfliteRepository {
     } else {
       return result.sublist(0, 5);
     }
+  }
+
+  Future<List<Question>> loadTestQuestionsByParentId(
+      {required String parentId}) async {
+    List<Question> result = [];
+    print("$parentId̉");
+    final maps = await requestApi<List<Map>, List<Map>>(
+      call: () => _db!.query(
+        "$tableQuestion",
+        where: '"parentId" = $parentId',
+      ),
+      defaultValue: [],
+    );
+
+    if (maps.length > 0) {
+      for (var item in maps) {
+        Question question = Question.fromJson(item as Map<String, dynamic>);
+        result.add(question);
+      }
+    }
+    print("question length: ${result.length}");
+    return result;
   }
 }

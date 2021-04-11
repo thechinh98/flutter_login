@@ -5,10 +5,9 @@ Future<R> requestApi<T, R>({required Future<T> Function() call, R Function(T)? t
     if (transform != null) {
       return transform(result);
     }
-    
     return result as R;
   } catch (e) {
-    print('Phungtd: requestApi -> Call ${call.toString()}  failed - ${e.toString()}');
+    print('CHINHLT: requestApi -> Call ${call.toString()}  failed - ${e.toString()}');
     return defaultValue;
   }
 }

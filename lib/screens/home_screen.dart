@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: SizedBox(
             width: double.infinity,
             child: Column(
@@ -41,10 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       RoundedButton(title: "PRACTICE", press: () {
-                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => TopicListScreen(type: 3,)));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(type: 2,title: "Practice",)));
                       }),
                       SizedBox(height: 30,),
-                      RoundedButton(title: "TEST", press: () {}, color: Colors.lightGreenAccent,),
+                      RoundedButton(title: "TEST", press: () {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(type: 3,title: "Test")));
+                      }, color: Colors.lightGreenAccent,),
                       SizedBox(height: 60,),
                       TextButton(
                         child: Text(
@@ -97,7 +99,7 @@ class RoundedButton extends StatelessWidget {
             title,
             style: TextStyle(
                 fontSize: 20,
-                color: Colors.white,
+                color: Colors.white,  
                 fontWeight: FontWeight.bold),
           ),
         ),

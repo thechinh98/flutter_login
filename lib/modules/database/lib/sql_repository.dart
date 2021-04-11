@@ -30,7 +30,7 @@ class SQLiteRepository{
     await _checkAndCopyDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, appDbName);
-    _db = await openDatabase(path);
+    _db = await   openDatabase(path);
 
     await _createTable(_db);
     return _db;
