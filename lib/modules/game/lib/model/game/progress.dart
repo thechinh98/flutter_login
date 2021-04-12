@@ -1,4 +1,5 @@
 import 'package:game/model/core/question.dart';
+import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 
 class Progress {

@@ -2,34 +2,9 @@
 import 'dart:convert';
 
 import 'file:///D:/CodeSample/Flutter/flutter_login/lib/modules/game/lib/model/core/question.dart';
+import 'package:game/model/database_model/question_database.dart';
+import 'package:game/model/database_model/question_progress_database.dart';
 
-
-final String tableQuestionProgress = 'QuestionProgress';
-final String _columnId = 'id';
-final String _columnUserId = "userId";
-final String _columnQuestionId = 'questionId';
-final String _columnBoxNum = 'boxNum';
-final String _columnBookmark = 'bookmark';
-final String _columnTimesAnswered = 'timesAnswered';
-final String _columnHistories = 'histories';
-final String _columntimes = "times";
-final String _columnTestHistories = "testHistories";
-final String _columnLastUpdate = "lastUpdate";
-final String _columntestTimes = "testTimes";
-final String createQuestionProgressTable = '''
-        create table IF NOT EXISTS $tableQuestionProgress (
-          $_columnId integer primary key autoincrement ,
-          $_columnQuestionId text,
-          $_columnUserId text,
-          $_columnHistories text,
-          $_columntimes text,
-          $_columnTestHistories text,
-          $_columntestTimes text,
-          $_columnTimesAnswered text,
-          $_columnBoxNum integer,
-          $_columnLastUpdate text,
-          $_columnBookmark integer)
-        ''';
 
 class QuestionProgress {
   late int id;
@@ -65,33 +40,33 @@ class QuestionProgress {
       times = jsonDecode(map['times']).cast<int>();
     }
     if (map['testHistories'] != null) {
-      testHistories = jsonDecode(map[_columnTestHistories]).cast<int>();
+      testHistories = jsonDecode(map[columnTestHistories]).cast<int>();
     }
     if (map['testTimes'] != null) {
-      testTimes = jsonDecode(map[_columntestTimes]).cast<int>();
+      testTimes = jsonDecode(map[columnTestTimes]).cast<int>();
     }
     id = map['id'];
     userId = map['userId'];
     questionId = map['questionId'];
-    bookmark = map[_columnBookmark] > 0 ? true : false;
+    bookmark = map[columnBookmark] > 0 ? true : false;
     boxNum = map['boxNum'] ?? 0;
     lastUpdate = map['lastUpdate'];
   }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {};
-    map[_columnQuestionId] = questionId;
-    map[_columnBoxNum] = boxNum;
-    map[_columnUserId] = userId;
-    map[_columnBookmark] = bookmark ? 1 : 0;
-    map[_columnHistories] = jsonEncode(histories);
-    map[_columntimes] = jsonEncode(times);
-    map[_columnTestHistories] = jsonEncode(testHistories);
-    map[_columntestTimes] = jsonEncode(testTimes);
+    map[columnQuestionId] = questionId;
+    map[columnBoxNum] = boxNum;
+    map[columnUserId] = userId;
+    map[columnBookmark] = bookmark ? 1 : 0;
+    map[columnHistories] = jsonEncode(histories);
+    map[columnTimes] = jsonEncode(times);
+    map[columnTestHistories] = jsonEncode(testHistories);
+    map[columnTestTimes] = jsonEncode(testTimes);
     if (id != null) {
       map["id"] = id;
     }
-    map[_columnLastUpdate] = lastUpdate;
+    map[columnLastUpdate] = lastUpdate;
     return map;
   }
 

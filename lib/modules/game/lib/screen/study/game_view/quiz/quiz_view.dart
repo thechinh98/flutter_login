@@ -5,6 +5,7 @@ import 'package:game/components/text_content.dart';
 import 'package:game/model/core/choice.dart';
 import 'package:game/model/core/face.dart';
 import 'package:game/model/core/question.dart';
+import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/screen/study/game_view/game_item_view.dart';

@@ -1,48 +1,9 @@
 import 'dart:convert';
 
 import 'package:game/model/core/choice.dart';
+import 'package:game/model/database_model/question_database.dart';
 import 'package:game/utils/constant.dart';
 import 'package:game/utils/utils.dart';
-
-final String tableQuestion = "Question";
-final String _columnId = "id";
-final String _columnParentId = "parentId";
-final String _columnImage = 'image';
-final String _columnSound = 'sound';
-final String _columnHint = 'hint';
-final String _columnExplain = 'explain';
-final String _columnContent = 'content';
-final String _columnVideo = "video";
-final String _columnCorrectAnswers = "correctAnswers";
-final String _columnChoices = "choices";
-final String _orderIndex = "orderIndex";
-final String _columnType = "type";
-final String _columnSkill = "skill";
-final String _columnBackSound = "backSound";
-final String createQuestionTable = '''
-        create table IF NOT EXISTS $tableQuestion (
-          $_columnId text primary key,
-          $_columnParentId text not null,
-          $_columnContent text not null,
-          $_columnSound text,
-          $_columnBackSound text,
-          $_columnType integer,
-          $_orderIndex integer,
-          $_columnSkill integer,
-          $_columnImage text,
-          $_columnVideo text,
-          $_columnHint text,
-          $_columnCorrectAnswers text,
-          $_columnChoices text,
-          $_columnExplain text)
-        ''';
-
-enum QuestionStatus {
-  delete,
-  notAnswerYet ,
-  answeredIncorrect,
-  answeredCorrect
-}
 
 
 class Question {
@@ -98,20 +59,20 @@ class Question {
   }
 
   getInfoQues(Map<String, dynamic> map) {
-    id = map[_columnId]?.toString() ?? "-1";
-    parentId = map[_columnParentId]?.toString() ?? "-1";
-    content = map[_columnContent] ?? "";
+    id = map[columnId]?.toString() ?? "-1";
+    parentId = map[columnParentId]?.toString() ?? "-1";
+    content = map[columnContent] ?? "";
     choices = [];
-    type = map[_columnType] ?? TYPE_CARD_NORMAL;
-    image = map[_columnImage] ?? "";
-    sound = ClientUtils.checkUrl(map[_columnSound]) ?? "";
-    backSound = ClientUtils.checkUrl(map[_columnBackSound]) ?? "";
-    hint = map[_columnHint] ?? "";
-    explain = map[_columnExplain] ?? "";
-    hint = map[_columnHint] ?? "";
-    skill = map[_columnSkill] ?? -1;
+    type = map[columnType] ?? TYPE_CARD_NORMAL;
+    image = map[columnImage] ?? "";
+    sound = ClientUtils.checkUrl(map[columnSound]) ?? "";
+    backSound = ClientUtils.checkUrl(map[columnBackSound]) ?? "";
+    hint = map[columnHint] ?? "";
+    explain = map[columnExplain] ?? "";
+    hint = map[columnHint] ?? "";
+    skill = map[columnSkill] ?? -1;
 
-    orderIndex = double.parse(map[_orderIndex]?.toString() ?? "0");
+    orderIndex = double.parse(map[orderIndex]?.toString() ?? "0");
 
     if (orderIndex! < 0) orderIndex = 0;
   }
@@ -119,12 +80,12 @@ class Question {
   getNormalQuestion(Map<String, dynamic> map) {
     List<dynamic>? correctAnswer = [];
     List<dynamic>? inCorrectAnswer = [];
-    if (map[_columnCorrectAnswers] != null &&
-        map[_columnCorrectAnswers] != "") {
-      correctAnswer = json.decode(map[_columnCorrectAnswers]);
+    if (map[columnCorrectAnswers] != null &&
+        map[columnCorrectAnswers] != "") {
+      correctAnswer = json.decode(map[columnCorrectAnswers]);
     }
-    if (map[_columnChoices] != null && map[_columnChoices] != "") {
-      inCorrectAnswer = json.decode(map[_columnChoices]);
+    if (map[columnChoices] != null && map[columnChoices] != "") {
+      inCorrectAnswer = json.decode(map[columnChoices]);
     }
     int index = 0;
     for (var i = 0; i < correctAnswer!.length; i++) {
@@ -153,13 +114,13 @@ class Question {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      _columnContent: content,
-      _columnParentId: parentId,
-      _columnExplain: explain,
-      _columnSkill: skill,
-      _columnSound: sound,
-      _columnType: type,
-      _columnHint: hint,
+      columnContent: content,
+      columnParentId: parentId,
+      columnExplain: explain,
+      columnSkill: skill,
+      columnSound: sound,
+      columnType: type,
+      columnHint: hint,
     };
   }
 }
