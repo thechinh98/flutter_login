@@ -46,9 +46,9 @@ class _TopicListScreenState extends State<TopicListScreen> {
                             topicDetail: _topicModel.topics[index].shortDes!,
                             press: () {
                               if(widget.type == 2){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!, 2)));
                               } else if(widget.type == 3){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!, 3)));
                               }
                             }),
                   )

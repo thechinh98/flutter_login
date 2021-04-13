@@ -1,5 +1,3 @@
-
-
 final String tableQuestionProgress = 'QuestionProgress';
 final String columnId = 'id';
 final String columnUserId = "userId";

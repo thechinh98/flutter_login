@@ -23,7 +23,7 @@ class StudyGameModel extends GameModel implements GamePlay {
     this.gameService = GameServiceInitializer().gameService;
   }
 
-  loadData({required String topicId}) async {
+  loadData({required String topicId, required int type}) async {
     resetListGame();
     questions.clear();
     this.currentTopic = topicId;
@@ -31,7 +31,11 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     print('CHINHLT: StudyGameModel- load data - topic ID: $topicId');
 
-    quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
+    if (type == 2) {
+      quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
+    } else if (type == 3) {
+      quesDb = await gameService.loadTestQuestionsByParentId(parentId: topicId);
+    }
 
     print('CHINHLT: StudyGameModel- load data - quesDb size: ${quesDb.length}');
 
@@ -45,10 +49,11 @@ class StudyGameModel extends GameModel implements GamePlay {
         questions.add(element);
       }
     });
-    
+
     List<Question> childQuestions = [];
     if (mapQuestionHasChild.isNotEmpty) {
-      childQuestions = await gameService.loadChildQuestionList(mapQuestionHasChild);
+      childQuestions =
+          await gameService.loadChildQuestionList(mapQuestionHasChild);
       childQuestions.forEach((element) {
         if (element.choices!.isNotEmpty) {
           Question? parentQuestion = mapQuestionHasChild[element.parentId!];
@@ -68,7 +73,8 @@ class StudyGameModel extends GameModel implements GamePlay {
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
-    print('CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
+    print(
+        'CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
     calcProgress();
     notifyListeners();
     onContinue();
@@ -76,7 +82,6 @@ class StudyGameModel extends GameModel implements GamePlay {
 
   generateGame(List<Question> questions, StudyType type, {int? choicesNum}) {
     if (type == StudyType.practice) {
-      
       final iterator = questions.iterator;
       while (iterator.moveNext()) {
         final question = iterator.current;
@@ -85,7 +90,7 @@ class StudyGameModel extends GameModel implements GamePlay {
         final gameType = _getGameType();
         switch (gameType) {
           case GameType.QUIZ:
-          createQuizGameObject(question, choicesNum);
+            createQuizGameObject(question, choicesNum);
             break;
           case GameType.FLASH_CARD:
             final flashGame = FlashGameObject.fromQuestion(question);
@@ -100,7 +105,8 @@ class StudyGameModel extends GameModel implements GamePlay {
             questionList.add(question);
             if (iterator.moveNext()) {
               questionList.add(iterator.current);
-              final matchingGame = MatchingGameObject.fromQuestions(questionList);
+              final matchingGame =
+                  MatchingGameObject.fromQuestions(questionList);
               listGames!.add(matchingGame);
             }
             break;
@@ -118,7 +124,10 @@ class StudyGameModel extends GameModel implements GamePlay {
   createQuizGameObject(Question question, int? choicesNum) {
     final quiz = QuizGameObject.fromQuestion(question);
     if (choicesNum != null) {
-      final numOfFakeChoices = choicesNum - quiz.choices.length < questions.length - 1 ? choicesNum - quiz.choices.length : questions.length - 1;
+      final numOfFakeChoices =
+          choicesNum - quiz.choices.length < questions.length - 1
+              ? choicesNum - quiz.choices.length
+              : questions.length - 1;
       if (numOfFakeChoices > 0) {
         int index = questions.indexOf(question);
         List<int> availableIndexes = [];
@@ -129,7 +138,8 @@ class StudyGameModel extends GameModel implements GamePlay {
         }
         availableIndexes.shuffle();
         for (int j = 0; j < numOfFakeChoices; j++) {
-          final choiceToClone = questions[availableIndexes.removeAt(0)].choices![0];
+          final choiceToClone =
+              questions[availableIndexes.removeAt(0)].choices![0];
           final fakeChoice = Choice.cloneWrongChoice(choiceToClone);
           quiz.choices.add(fakeChoice);
         }
@@ -141,7 +151,8 @@ class StudyGameModel extends GameModel implements GamePlay {
     if (question.parentQues != null) {
       String? key = question.parentQues!.id;
       if (!mapHasChild.containsKey(key)) {
-        ParaGameObject paraGameObject = ParaGameObject.fromQuestion(question.parentQues!);
+        ParaGameObject paraGameObject =
+            ParaGameObject.fromQuestion(question.parentQues!);
         quiz.parent = paraGameObject;
         mapHasChild.putIfAbsent(key!, () => paraGameObject);
       } else {
@@ -186,7 +197,8 @@ class StudyGameModel extends GameModel implements GamePlay {
     resultList.addAll(listDone);
     if (currentGames != null &&
         currentGames!.gameObjectStatus == GameObjectStatus.waiting &&
-        (currentGames is QuizGameObject || currentGames is MatchingGameObject)) {
+        (currentGames is QuizGameObject ||
+            currentGames is MatchingGameObject)) {
       resultList.add(currentGames!);
     }
     gameProgress = Progress.calcProgress(resultList);
@@ -202,7 +214,7 @@ class StudyGameModel extends GameModel implements GamePlay {
       return;
     }
     currentGames = listGames!.removeAt(0);
-    if (currentGames!.gameObjectStatus== GameObjectStatus.answered) {
+    if (currentGames!.gameObjectStatus == GameObjectStatus.answered) {
       if (currentGames!.questionStatus == QuestionStatus.answeredIncorrect) {
         currentGames!.reset();
       }
@@ -223,5 +235,4 @@ class StudyGameModel extends GameModel implements GamePlay {
   bool isFinished() {
     return listDone.isNotEmpty && listGames!.isEmpty;
   }
-
 }

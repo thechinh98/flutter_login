@@ -16,8 +16,8 @@ class StudyLogic {
     gameService = GameServiceInitializer().gameService;
   }
 
-  loadData() async {
-    await studyGameModel.loadData(topicId: topicId);
+  loadData({required int type}) async {
+    await studyGameModel.loadData(topicId: topicId, type: type);
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {

@@ -1,4 +1,3 @@
-
 final String tableTopic = "Topic";
 final String columnId = "id";
 final String columnTitle = "title";

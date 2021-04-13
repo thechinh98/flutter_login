@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             final topicId = '4536143782608896';
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => StudyScreen(topicId)),
+              MaterialPageRoute(builder: (_) => StudyScreen(topicId, 2)),
             );
           },
         ),

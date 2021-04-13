@@ -1,4 +1,3 @@
-
 final String tableQuestion = "Question";
 final String columnId = "id";
 final String columnParentId = "parentId";
@@ -10,7 +9,7 @@ final String columnContent = 'content';
 final String columnVideo = "video";
 final String columnCorrectAnswers = "correctAnswers";
 final String columnChoices = "choices";
-final String orderIndex = "orderIndex";
+final String columnOrderIndex = "orderIndex";
 final String columnType = "type";
 final String columnSkill = "skill";
 final String columnBackSound = "backSound";
@@ -22,7 +21,7 @@ final String createQuestionTable = '''
           $columnSound text,
           $columnBackSound text,
           $columnType integer,
-          $orderIndex integer,
+          $columnOrderIndex integer,
           $columnSkill integer,
           $columnImage text,
           $columnVideo text,

@@ -1,5 +1,6 @@
 import 'package:game/components/new_sound_data.dart';
 import 'package:game/model/core/question.dart';
+import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/flash_game_object.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
@@ -17,8 +18,8 @@ enum StudyType { study, practice }
 
 class StudyScreen extends StatefulWidget {
   final String topicId;
-
-  StudyScreen(this.topicId);
+  final int type;
+  StudyScreen(this.topicId, this.type);
 
   @override
   _StudyScreenState createState() => _StudyScreenState();
@@ -45,7 +46,7 @@ class _StudyScreenState extends State<StudyScreen>
     gameModel = context.read<StudyGameModel>();
     gameModel.addListener(listener);
 
-    studyLogic.loadData();
+    studyLogic.loadData(type: widget.type);
 
     //init animation
     _controller = AnimationController(

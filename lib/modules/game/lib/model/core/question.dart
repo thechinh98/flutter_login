@@ -60,6 +60,7 @@ class Question {
 
   getInfoQues(Map<String, dynamic> map) {
     id = map[columnId]?.toString() ?? "-1";
+    print(id);
     parentId = map[columnParentId]?.toString() ?? "-1";
     content = map[columnContent] ?? "";
     choices = [];
@@ -72,7 +73,7 @@ class Question {
     hint = map[columnHint] ?? "";
     skill = map[columnSkill] ?? -1;
 
-    orderIndex = double.parse(map[orderIndex]?.toString() ?? "0");
+    orderIndex = double.parse(map[columnOrderIndex]?.toString() ?? "0");
 
     if (orderIndex! < 0) orderIndex = 0;
   }
