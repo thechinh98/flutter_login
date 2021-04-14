@@ -1,5 +1,4 @@
 import 'package:game/components/new_sound_data.dart';
-import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/flash_game_object.dart';
 import 'package:game/model/game/game_object.dart';
@@ -18,8 +17,7 @@ enum StudyType { study, practice }
 
 class StudyScreen extends StatefulWidget {
   final String topicId;
-  final int type;
-  StudyScreen(this.topicId, this.type);
+  StudyScreen(this.topicId);
 
   @override
   _StudyScreenState createState() => _StudyScreenState();
@@ -40,13 +38,14 @@ class _StudyScreenState extends State<StudyScreen>
 
   @override
   void initState() {
-    print('CHINHLT: Study Screen - init State: StudyModel: ${context.read<StudyGameModel>()}');
+    print(
+        'CHINHLT: Study Screen - init State: StudyModel: ${context.read<StudyGameModel>()}');
     studyLogic = StudyLogic(context: context, topicId: topicId);
 
     gameModel = context.read<StudyGameModel>();
     gameModel.addListener(listener);
 
-    studyLogic.loadData(type: widget.type);
+    studyLogic.loadData();
 
     //init animation
     _controller = AnimationController(
@@ -125,7 +124,8 @@ class _StudyScreenState extends State<StudyScreen>
                     previousGame,
                   ),
                 ),
-                if (gameModel.currentGames is! FlashGameObject) _renderContinueBtn(),
+                if (gameModel.currentGames is! FlashGameObject)
+                  _renderContinueBtn(),
               ],
             );
           },
@@ -170,12 +170,6 @@ class _StudyScreenState extends State<StudyScreen>
     Color _color = Theme.of(context).backgroundColor;
     if (currentGame.gameObjectStatus == GameObjectStatus.waiting) {
       return Container(child: null);
-    }
-    if (currentGame.questionStatus == QuestionStatus.answeredCorrect) {
-      _color = Colors.blueAccent;
-      if (context.read<StudyGameModel>().listGames!.isEmpty) {}
-    } else if (currentGame.questionStatus == QuestionStatus.answeredIncorrect) {
-      _color = Colors.red;
     }
     return Container(
       child: MaterialButton(

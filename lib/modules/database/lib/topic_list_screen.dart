@@ -3,6 +3,7 @@ import 'package:database/topic_item_view.dart';
 import 'package:database/topic_model.dart';
 import 'package:flutter/material.dart';
 import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/test/test_screen.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
@@ -46,9 +47,9 @@ class _TopicListScreenState extends State<TopicListScreen> {
                             topicDetail: _topicModel.topics[index].shortDes!,
                             press: () {
                               if(widget.type == 2){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!, 2)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!)));
                               } else if(widget.type == 3){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StudyScreen(_topicModel.topics[index].id!, 3)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => TestScreen(_topicModel.topics[index].id!)));
                               }
                             }),
                   )

@@ -23,7 +23,7 @@ class StudyGameModel extends GameModel implements GamePlay {
     this.gameService = GameServiceInitializer().gameService;
   }
 
-  loadData({required String topicId, required int type}) async {
+  loadData({required String topicId}) async {
     resetListGame();
     questions.clear();
     this.currentTopic = topicId;
@@ -31,11 +31,7 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     print('CHINHLT: StudyGameModel- load data - topic ID: $topicId');
 
-    if (type == 2) {
       quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
-    } else if (type == 3) {
-      quesDb = await gameService.loadTestQuestionsByParentId(parentId: topicId);
-    }
 
     print('CHINHLT: StudyGameModel- load data - quesDb size: ${quesDb.length}');
 

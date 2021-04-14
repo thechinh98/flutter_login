@@ -9,14 +9,20 @@ import 'package:game/model/game/progress.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/model/game/spelling_game_object.dart';
 import 'package:game/providers/game_model.dart';
-import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/test/game_view/quiz/quiz_view.dart';
+import 'package:game/screen/test/test_screen.dart';
+import 'package:game/service/service.dart';
 
 class TestGameModel extends GameModel implements GamePlay {
   List<Question> questions = [];
   String currentTopic = '';
   GameObject? previousGame;
   List<GameObject> listDone = [];
+
+  TestGameModel() {
+    print("TEST GAME MODEL: Init service");
+    this.gameService = GameServiceInitializer().gameService;
+  }
 
   loadData({required String topicId}) async {
     resetListGame();
@@ -32,7 +38,7 @@ class TestGameModel extends GameModel implements GamePlay {
       if (element.hasChild) {
         mapQuestionHasChild.putIfAbsent(element.id!, () => element);
       } else {
-        questionsDb.add(element);
+        questions.add(element);
       }
     });
     List<Question> childQuestions = [];
@@ -51,7 +57,7 @@ class TestGameModel extends GameModel implements GamePlay {
         }
       });
     }
-    generateGame(questions, StudyType.practice, choicesNum: 4);
+    generateGame(questions, choicesNum: 4);
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
@@ -60,10 +66,9 @@ class TestGameModel extends GameModel implements GamePlay {
     notifyListeners();
     onContinue();
   }
-  generateGame(List<Question> questions, StudyType type, {int? choicesNum}) {
-    if (type == StudyType.practice) {
+  generateGame(List<Question> questions, {int? choicesNum}) {
 
-      final iterator = questions.iterator;
+    final iterator = questions.iterator;
       while (iterator.moveNext()) {
         final question = iterator.current;
 
@@ -73,28 +78,10 @@ class TestGameModel extends GameModel implements GamePlay {
           case GameType.QUIZ:
             createQuizGameObject(question, choicesNum);
             break;
-          case GameType.FLASH_CARD:
-            final flashGame = FlashGameObject.fromQuestion(question);
-            listGames!.add(flashGame);
-            break;
-          case GameType.SPELLING:
-            final spellingGame = SpellingGameObject.fromQuestion(question);
-            listGames!.add(spellingGame);
-            break;
-          case GameType.MATCHING:
-            List<Question> questionList = [];
-            questionList.add(question);
-            if (iterator.moveNext()) {
-              questionList.add(iterator.current);
-              final matchingGame = MatchingGameObject.fromQuestions(questionList);
-              listGames!.add(matchingGame);
-            }
-            break;
           default:
             break;
         }
       }
-    }
   }
 
   GameType _getGameType() {
@@ -140,7 +127,7 @@ class TestGameModel extends GameModel implements GamePlay {
   onAnswer<T>(AnswerType type, T params) async {
     switch (type) {
       case AnswerType.quiz:
-        (currentGames as QuizGameObject).onAnswer(params as QuizAnswerParams);
+        (currentGames as QuizGameObject).onTestAnswer(params as TestQuizAnswerParams);
         break;
       default:
         break;

@@ -7,8 +7,9 @@ import 'package:game/model/core/face.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
-import 'package:game/screen/study/game_view/game_item_view.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/test/game_view/game_item_view.dart';
+import 'package:game/screen/test/test_screen.dart';
+
 
 class QuizView extends StatelessWidget {
   final QuizGameObject gameObject;
@@ -146,11 +147,8 @@ class QuizView extends StatelessWidget {
   }
 
   void choiceClicked(Choice e) {
-    if (gameObject.gameObjectStatus == GameObjectStatus.answered) {
-      return;
-    }
-    QuizAnswerParams params = QuizAnswerParams(
-        type: QuizAnswerType.choice_click,
+    TestQuizAnswerParams params = TestQuizAnswerParams(
+        type: TestQuizAnswerType.choice_click,
         choice: e,
         questionId: gameObject.questionId);
     if (onAnswer != null) {
@@ -162,11 +160,7 @@ class QuizView extends StatelessWidget {
   Color _getChoiceColor(Choice e) {
     if (gameObject.gameObjectStatus == GameObjectStatus.answered) {
       if (e.selected) {
-        if (e.isCorrect) {
-          return Colors.blueAccent;
-        } else {
-          return Colors.red;
-        }
+        return Colors.grey;
       } else {
         return Colors.white;
       }
@@ -181,14 +175,14 @@ class QuizView extends StatelessWidget {
   }
 }
 
-enum QuizAnswerType { choice_click, continue_click }
+enum TestQuizAnswerType { choice_click, continue_click }
 
-class QuizAnswerParams {
-  QuizAnswerType type;
+class TestQuizAnswerParams {
+  TestQuizAnswerType type;
   Choice choice;
   String? questionId;
 
-  QuizAnswerParams({
+  TestQuizAnswerParams({
     required this.type,
     required this.choice,
     required this.questionId,

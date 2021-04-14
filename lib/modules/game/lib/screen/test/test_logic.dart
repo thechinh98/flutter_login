@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/test/test_screen.dart';
 import 'package:game/service/game_service.dart';
 import 'package:game/service/service.dart';
 import 'package:provider/provider.dart';
 
-class StudyLogic {
+class TestLogic {
   final String topicId;
-  late StudyGameModel studyGameModel;
+  late TestGameModel testGameModel;
   late GameService gameService;
   BuildContext context;
 
-  StudyLogic({required this.context, required this.topicId}) {
-    studyGameModel = context.read<StudyGameModel>();
+  TestLogic({required this.context, required this.topicId}) {
+    testGameModel = context.read<TestGameModel>();
     gameService = GameServiceInitializer().gameService;
   }
 
   loadData() async {
-    await studyGameModel.loadData(topicId: topicId);
+    await testGameModel.loadData(topicId: topicId);
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {
-    await studyGameModel.onAnswer(type, params);
+    await testGameModel.onAnswer(type, params);
   }
 
   onContinue() {
-    studyGameModel.onContinue();
+    testGameModel.onContinue();
   }
 
   navigateAfterFinishingStudy() {

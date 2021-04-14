@@ -4,6 +4,7 @@ import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
 import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
+import 'package:game/screen/test/game_view/quiz/quiz_view.dart';
 class QuizGameObject extends GameObject {
   ParaGameObject? parent;
   String? questionId;
@@ -34,6 +35,7 @@ class QuizGameObject extends GameObject {
         }
         Choice clicked = params.choice;
         updateProgress(clicked);
+        calculatePoint();
         break;
       case QuizAnswerType.continue_click:
         break;
@@ -41,25 +43,40 @@ class QuizGameObject extends GameObject {
         break;
     }
   }
+  onTestAnswer(TestQuizAnswerParams params) {
+    switch (params.type){
+      case TestQuizAnswerType.choice_click:
+        Choice clicked = params.choice;
+        updateProgress(clicked);
+        break;
+      case TestQuizAnswerType.continue_click:
+        calculatePoint();
+        break;
+      default:
+        break;
+    }
+  }
 
   updateProgress(Choice choice) {
+    gameObjectStatus = GameObjectStatus.answered;
+    print("TEST GAME MODEL: Answered");
     if (answered.contains(choice)) {
       return;
     }
-
     choice.selected = true;
     answered.add(choice);
-    // always change when length == correctNum so it will not affect
-    // if (answered.isNotEmpty && answered.length > correctNum) {
-    //   Choice oldChoice = answered[0];
-    //   oldChoice.selected = false;
-    //   Choice x = choices.firstWhere((element) => element.id == oldChoice.id)
-    //     ..selected = false;
-    //   print('CHINHLT: Choice with id: ${x.id} is unselected');
-    //   answered.removeAt(0);
-    // }
+    // only affect on test mode
+    if (answered.isNotEmpty && answered.length > correctNum) {
+      Choice oldChoice = answered[0];
+      oldChoice.selected = false;
+      Choice x = choices.firstWhere((element) => element.id == oldChoice.id)
+        ..selected = false;
+      print('CHINHLT: Choice with id: ${x.id} is unselected');
+      answered.removeAt(0);
+    }
+  }
+  calculatePoint(){
     if (answered.length == correctNum) {
-     gameObjectStatus = GameObjectStatus.answered;
       int selectedCorrect = 0;
       answered.forEach((element) {
         if (element.isCorrect) selectedCorrect++;
@@ -71,7 +88,6 @@ class QuizGameObject extends GameObject {
       }
     }
   }
-
   @override
   reset() {
     super.reset();

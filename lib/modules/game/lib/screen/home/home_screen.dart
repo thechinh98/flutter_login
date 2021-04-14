@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:game/route/navigation_services.dart';
-import 'package:game/route/routes.dart';
 import 'package:game/screen/study/study_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             final topicId = '4536143782608896';
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => StudyScreen(topicId, 2)),
+              MaterialPageRoute(builder: (_) => StudyScreen(topicId)),
             );
           },
         ),
