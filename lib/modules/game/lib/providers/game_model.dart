@@ -28,6 +28,10 @@ class GameModel extends ChangeNotifier {
     gameProgress = Progress();
     isFinishGame = false;
   }
+  chooseGame(int index){
+    currentGames = listGames![index];
+    notifyListeners();
+  }
 }
 
 class GamePlay {

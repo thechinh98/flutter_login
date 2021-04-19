@@ -8,6 +8,7 @@ import 'package:game/providers/test_game_model.dart';
 import 'package:game/screen/test/game_view/game_item_view.dart';
 import 'package:game/screen/test/test_logic.dart';
 import 'package:provider/provider.dart';
+
 enum AnswerType { quiz, spelling, matching, flash }
 
 class TestScreen extends StatefulWidget {
@@ -18,8 +19,7 @@ class TestScreen extends StatefulWidget {
   _TestScreenState createState() => _TestScreenState();
 }
 
-class _TestScreenState extends State<TestScreen>
-    with TickerProviderStateMixin {
+class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
   String get topicId => widget.topicId;
 
   late TestLogic testLogic;
@@ -118,6 +118,10 @@ class _TestScreenState extends State<TestScreen>
                     previousGame,
                   ),
                 ),
+                ElevatedButton(
+                  onPressed: () => _buttonPress(),
+                  child: Text("Show Question"),
+                ),
                 _renderContinueBtn(),
               ],
             );
@@ -128,9 +132,9 @@ class _TestScreenState extends State<TestScreen>
   }
 
   Widget _renderCurrentGame(
-      GameObject? _current,
-      GameObject? _pre,
-      ) {
+    GameObject? _current,
+    GameObject? _pre,
+  ) {
     if (_current == null) {
       return Container();
     }
@@ -172,7 +176,7 @@ class _TestScreenState extends State<TestScreen>
           child: Center(
             child: Text(
               (currentGame.questionStatus == QuestionStatus.answeredCorrect &&
-                  context.read<TestGameModel>().listGames!.isEmpty)
+                      context.read<TestGameModel>().listGames!.isEmpty)
                   ? 'Finish'
                   : 'Continue',
               style: TextStyle(color: Colors.white),
@@ -188,4 +192,28 @@ class _TestScreenState extends State<TestScreen>
     gameModel.removeListener(listener);
     super.dispose();
   }
+
+  void _buttonPress() { showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          color: Colors.amber,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text('Modal BottomSheet'),
+                ElevatedButton(
+                  child: const Text('Change to Question 2'),
+                  onPressed: () {
+                    gameModel.chooseGame(2);
+                  },
+                )
+              ],
+            ),
+          ),
+        );
+      });}
 }

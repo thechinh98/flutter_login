@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
+import 'package:game/screen/study/study_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String testTopicId = "5757482593943552";
     LoginModel _loginModel = Provider.of<LoginModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
@@ -36,12 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text("Xin chào, ${_loginModel.account.username ?? ''}", style: TextStyle(fontSize: 20),),
                 SizedBox(height: 90,),
+                // Container(
+                //   padding: EdgeInsets.symmetric(horizontal: 20),
+                //   child: Image.network("kstoeic/images/9907982_1564544773555.png",fit: BoxFit.fitWidth,),
+                // ),
                 Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       RoundedButton(title: "PRACTICE", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(type: 2,title: "Practice",)));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => StudyScreen(testTopicId)));
                       }),
                       SizedBox(height: 30,),
                       RoundedButton(title: "TEST", press: () {

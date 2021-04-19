@@ -36,6 +36,7 @@ class QuizView extends StatelessWidget {
           _renderSound(),
           _renderParentQuestion(),
           _renderQuestion(),
+          _renderImage(),
           _buildListChoices(context),
           _buildExplain(),
         ],
@@ -52,7 +53,18 @@ class QuizView extends StatelessWidget {
     }
     return Container();
   }
-
+  Container _renderImage(){
+    if(gameObject.question.image != null){
+      print(gameObject.question.image);
+      return Container(
+        width: double.infinity,
+        height: 200,
+        margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        child: Image.network(gameObject.question.image!,fit: BoxFit.contain,),
+      );
+    }
+    return Container();
+  }
   Container _renderQuestion() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
