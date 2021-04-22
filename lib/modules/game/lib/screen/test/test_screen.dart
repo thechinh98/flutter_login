@@ -193,27 +193,66 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _buttonPress() { showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          color: Colors.amber,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Text('Modal BottomSheet'),
-                ElevatedButton(
-                  child: const Text('Change to Question 2'),
-                  onPressed: () {
-                    gameModel.chooseGame(2);
-                  },
-                )
-              ],
-            ),
+  void _buttonPress() {
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return GridView.count(
+            crossAxisCount: 5,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 8.0,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            children: List.generate(gameModel.questions.length,
+                (index) => questionIndexItem(index: index)),
+          );
+        });
+  }
+
+  questionIndexItem({required int index}) {
+    return GestureDetector(
+      onTap: (){gameModel.chooseGame(index);},
+      child: Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: gameModel.listGames![index].gameObjectStatus != GameObjectStatus.answered ? Colors.grey : Colors.green,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            "${index+1}",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-        );
-      });}
+        ),
+      ),
+    );
+  }
 }
+// class QuestionIndexItem extends StatelessWidget {
+//   final int index;
+//   const QuestionIndexItem({
+//     Key? key,required this.index,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: gameM,
+//       child: Container(
+//         width: 20,
+//         height: 20,
+//         decoration: BoxDecoration(
+//           color: Colors.green,
+//           borderRadius: BorderRadius.circular(20),
+//         ),
+//         child: Center(
+//           child: Text(
+//             "${index+1}",
+//             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+//

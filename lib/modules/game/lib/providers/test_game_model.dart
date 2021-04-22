@@ -18,9 +18,8 @@ class TestGameModel extends GameModel implements GamePlay {
   String currentTopic = '';
   GameObject? previousGame;
   List<GameObject> listDone = [];
-
+  int indexQuestion = 0;
   TestGameModel() {
-    print("TEST GAME MODEL: Init service");
     this.gameService = GameServiceInitializer().gameService;
   }
 
@@ -67,7 +66,6 @@ class TestGameModel extends GameModel implements GamePlay {
     onContinue();
   }
   generateGame(List<Question> questions, {int? choicesNum}) {
-
     final iterator = questions.iterator;
       while (iterator.moveNext()) {
         final question = iterator.current;
@@ -143,12 +141,16 @@ class TestGameModel extends GameModel implements GamePlay {
 
   updateGameProgress<T>([T? params]) {
     if (currentGames!.gameObjectStatus == GameObjectStatus.answered) {
-      if (currentGames!.questionStatus == QuestionStatus.answeredCorrect) {
         listDone.add(currentGames!);
       } else {
-        listGames!.add(currentGames!);
-      }
+      listGames!.add(currentGames!);
     }
+  }
+
+  chooseGame(int index){
+    currentGames = listGames![index];
+    indexQuestion = index;
+    notifyListeners();
   }
 
   @override
@@ -166,6 +168,7 @@ class TestGameModel extends GameModel implements GamePlay {
 
   @override
   void onContinue({Function? callBack}) {
+    indexQuestion++;
     if (isFinished()) {
       onFinish();
       return;
@@ -173,13 +176,13 @@ class TestGameModel extends GameModel implements GamePlay {
     if (listGames!.isEmpty) {
       return;
     }
-    currentGames = listGames!.removeAt(0);
-    if (currentGames!.gameObjectStatus== GameObjectStatus.answered) {
-      if (currentGames!.questionStatus == QuestionStatus.answeredIncorrect) {
-        currentGames!.reset();
-      }
-    }
-
+    // currentGames = listGames!.removeAt(0);
+    // if (currentGames!.gameObjectStatus== GameObjectStatus.answered) {
+    //   if (currentGames!.questionStatus == QuestionStatus.answeredIncorrect) {
+    //     currentGames!.reset();
+    //   }
+    // }
+    currentGames = listGames![indexQuestion];
     if (callBack != null) {
       callBack();
     }
@@ -193,7 +196,7 @@ class TestGameModel extends GameModel implements GamePlay {
   }
 
   bool isFinished() {
-    return listDone.isNotEmpty && listGames!.isEmpty;
+    return listDone.isNotEmpty && listGames!.length == listDone.length;
   }
 
 }

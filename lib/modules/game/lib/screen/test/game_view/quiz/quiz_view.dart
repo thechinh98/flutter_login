@@ -38,7 +38,6 @@ class QuizView extends StatelessWidget {
           _renderQuestion(),
           _renderImage(),
           _buildListChoices(context),
-          _buildExplain(),
         ],
       ),
     );
@@ -73,39 +72,6 @@ class QuizView extends StatelessWidget {
         textStyle: TextStyle(fontSize: 20),
       ),
     );
-  }
-
-  Container _buildExplain() {
-    if (gameObject.gameObjectStatus == GameObjectStatus.answered &&
-        gameObject.questionStatus == QuestionStatus.answeredCorrect) {
-      if (gameObject.explain == null) {
-        if (gameObject is QuizGameObject && gameObject.parent != null) {
-          if (gameObject.parent!.explain != null) {
-            return Container(
-              width: double.infinity,
-              child: Center(
-                child: TextContent(
-                  face: gameObject.parent!.explain!,
-                  textStyle: TextStyle(fontSize: 18),
-                ),
-              ),
-            );
-          }
-        }
-        return Container();
-      }
-      return Container(
-        width: double.infinity,
-        child: Center(
-          child: TextContent(
-            face: gameObject.explain!,
-            textStyle: TextStyle(fontSize: 20),
-          ),
-        ),
-      );
-    } else {
-      return Container();
-    }
   }
 
   _renderSound() {
