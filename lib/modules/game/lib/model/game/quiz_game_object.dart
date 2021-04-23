@@ -63,6 +63,7 @@ class QuizGameObject extends GameObject {
     if (answered.contains(choice)) {
       return;
     }
+    // un-select choice when choose more than number of correct choices
     choice.selected = true;
     answered.add(choice);
     // only affect on test mode
@@ -70,9 +71,7 @@ class QuizGameObject extends GameObject {
       Choice oldChoice = answered[0];
       oldChoice.selected = false;
       Choice x = choices.firstWhere((element) => element.id == oldChoice.id)
-        ..selected = false;
-      print('CHINHLT: Choice with id: ${x.id} is unselected');
-      answered.removeAt(0);
+        ..selected = false;answered.removeAt(0);
     }
   }
   calculatePoint(){

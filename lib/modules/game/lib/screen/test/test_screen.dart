@@ -93,10 +93,10 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Finished!'),
+                    Text("${gameModel.getTotalPoint()}"),
                     SizedBox(height: 16),
                     ElevatedButton(
-                      child: Text('Continue'),
+                      child: Text('Submit'),
                       onPressed: () {
                         testLogic.navigateAfterFinishingStudy();
                       },
@@ -210,17 +210,22 @@ class _TestScreenState extends State<TestScreen> with TickerProviderStateMixin {
 
   questionIndexItem({required int index}) {
     return GestureDetector(
-      onTap: (){gameModel.chooseGame(index);},
+      onTap: () {
+        gameModel.chooseGame(index);
+      },
       child: Container(
         width: 20,
         height: 20,
         decoration: BoxDecoration(
-          color: gameModel.listGames![index].gameObjectStatus != GameObjectStatus.answered ? Colors.grey : Colors.green,
+          color: gameModel.listGames![index].gameObjectStatus !=
+                  GameObjectStatus.answered
+              ? Colors.grey
+              : Colors.green,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
           child: Text(
-            "${index+1}",
+            "${index + 1}",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),

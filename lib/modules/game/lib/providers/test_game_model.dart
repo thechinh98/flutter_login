@@ -29,7 +29,8 @@ class TestGameModel extends GameModel implements GamePlay {
     this.currentTopic = topicId;
     List<Question> questionsDb = [];
     print("CHINHLT: TestGameModel - load data - topic ID: $topicId");
-    questionsDb = await gameService.loadTestQuestionsByParentId(parentId: topicId);
+    questionsDb =
+        await gameService.loadTestQuestionsByParentId(parentId: topicId);
     print(
         "CHINHLT: TestGameMobel - load data - topic ID: ${questionsDb.length}");
     Map<String, Question> mapQuestionHasChild = {};
@@ -41,45 +42,46 @@ class TestGameModel extends GameModel implements GamePlay {
       }
     });
     List<Question> childQuestions = [];
-    if(mapQuestionHasChild.isNotEmpty){
-      childQuestions = await gameService.loadChildQuestionList(mapQuestionHasChild);
+    if (mapQuestionHasChild.isNotEmpty) {
+      childQuestions =
+          await gameService.loadChildQuestionList(mapQuestionHasChild);
       childQuestions.forEach((element) {
-        if(element.choices!.isNotEmpty){
+        if (element.choices!.isNotEmpty) {
           Question? parentQuestion = mapQuestionHasChild[element.parentId!];
-          if(parentQuestion != null){
+          if (parentQuestion != null) {
             element.parentQues = parentQuestion;
             element.sound = parentQuestion.sound;
           }
           questions.add(element);
-        } else {
-
-        }
+        } else {}
       });
     }
     generateGame(questions, choicesNum: 4);
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
-    print('CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
+    print(
+        'CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
     calcProgress();
     notifyListeners();
     onContinue();
   }
+
   generateGame(List<Question> questions, {int? choicesNum}) {
     final iterator = questions.iterator;
-      while (iterator.moveNext()) {
-        final question = iterator.current;
+    while (iterator.moveNext()) {
+      final question = iterator.current;
 
-        // TODO set game type
-        final gameType = _getGameType();
-        switch (gameType) {
-          case GameType.QUIZ:
-            createQuizGameObject(question, choicesNum);
-            break;
-          default:
-            break;
-        }
+      // TODO set game type
+      final gameType = _getGameType();
+      switch (gameType) {
+        case GameType.QUIZ:
+          createQuizGameObject(question, choicesNum);
+          break;
+        default:
+          break;
       }
+    }
   }
 
   GameType _getGameType() {
@@ -89,7 +91,10 @@ class TestGameModel extends GameModel implements GamePlay {
   createQuizGameObject(Question question, int? choicesNum) {
     final quiz = QuizGameObject.fromQuestion(question);
     if (choicesNum != null) {
-      final numOfFakeChoices = choicesNum - quiz.choices.length < questions.length - 1 ? choicesNum - quiz.choices.length : questions.length - 1;
+      final numOfFakeChoices =
+          choicesNum - quiz.choices.length < questions.length - 1
+              ? choicesNum - quiz.choices.length
+              : questions.length - 1;
       if (numOfFakeChoices > 0) {
         int index = questions.indexOf(question);
         List<int> availableIndexes = [];
@@ -100,7 +105,8 @@ class TestGameModel extends GameModel implements GamePlay {
         }
         availableIndexes.shuffle();
         for (int j = 0; j < numOfFakeChoices; j++) {
-          final choiceToClone = questions[availableIndexes.removeAt(0)].choices![0];
+          final choiceToClone =
+              questions[availableIndexes.removeAt(0)].choices![0];
           final fakeChoice = Choice.cloneWrongChoice(choiceToClone);
           quiz.choices.add(fakeChoice);
         }
@@ -111,7 +117,8 @@ class TestGameModel extends GameModel implements GamePlay {
     if (question.parentQues != null) {
       String? key = question.parentQues!.id;
       if (!mapHasChild.containsKey(key)) {
-        ParaGameObject paraGameObject = ParaGameObject.fromQuestion(question.parentQues!);
+        ParaGameObject paraGameObject =
+            ParaGameObject.fromQuestion(question.parentQues!);
         quiz.parent = paraGameObject;
         mapHasChild.putIfAbsent(key!, () => paraGameObject);
       } else {
@@ -125,7 +132,8 @@ class TestGameModel extends GameModel implements GamePlay {
   onAnswer<T>(AnswerType type, T params) async {
     switch (type) {
       case AnswerType.quiz:
-        (currentGames as QuizGameObject).onTestAnswer(params as TestQuizAnswerParams);
+        (currentGames as QuizGameObject)
+            .onTestAnswer(params as TestQuizAnswerParams);
         break;
       default:
         break;
@@ -141,13 +149,13 @@ class TestGameModel extends GameModel implements GamePlay {
 
   updateGameProgress<T>([T? params]) {
     if (currentGames!.gameObjectStatus == GameObjectStatus.answered) {
-        listDone.add(currentGames!);
-      } else {
+      listDone.add(currentGames!);
+    } else {
       listGames!.add(currentGames!);
     }
   }
 
-  chooseGame(int index){
+  chooseGame(int index) {
     currentGames = listGames![index];
     indexQuestion = index;
     notifyListeners();
@@ -160,7 +168,8 @@ class TestGameModel extends GameModel implements GamePlay {
     resultList.addAll(listDone);
     if (currentGames != null &&
         currentGames!.gameObjectStatus == GameObjectStatus.waiting &&
-        (currentGames is QuizGameObject || currentGames is MatchingGameObject)) {
+        (currentGames is QuizGameObject ||
+            currentGames is MatchingGameObject)) {
       resultList.add(currentGames!);
     }
     gameProgress = Progress.calcProgress(resultList);
@@ -199,4 +208,32 @@ class TestGameModel extends GameModel implements GamePlay {
     return listDone.isNotEmpty && listGames!.length == listDone.length;
   }
 
+  String? getTotalPoint() {
+    int correctPoint = 0;
+    int total = listDone.length;
+    if (isFinished()) {
+      listDone.forEach((element) {
+        if (element.questionStatus == QuestionStatus.answeredCorrect) {
+          correctPoint++;
+        }
+      });
+      return "$correctPoint / $total";
+    } else {
+      return "You have not answered question ${_getNotAnsweredQuestion()}";
+    }
+  }
+
+  String _getNotAnsweredQuestion() {
+    List<int> notAnswerList = [];
+    String notAnswerString = "";
+    listGames!.asMap().forEach((key, value) {
+      if (value.gameObjectStatus != GameObjectStatus.answered) {
+        notAnswerList.add(key);
+      }
+    });
+    notAnswerList.forEach((element) {
+      notAnswerString = notAnswerString + "${element.toString()}, ";
+    });
+    return notAnswerString;
+  }
 }
