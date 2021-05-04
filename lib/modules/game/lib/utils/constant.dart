@@ -7,6 +7,9 @@ const int TYPE_CARD_PARAGRAPH_CHILD = -1;
 
 const int TOPIC_MODE_NORMAL = 0;
 
+const int GAME_STUDY_MODE = 0;
+const int GAME_TEST_MODE = 1;
+
 class AppFont {
   static const FONT_SF_PRO = "SF Pro";
 }

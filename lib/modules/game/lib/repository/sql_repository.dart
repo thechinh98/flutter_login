@@ -146,7 +146,6 @@ class SqfliteRepository {
 
   Future<List<Question>> loadTestQuestionsByParentId(
       {required String parentId}) async {
-    print("CHINHLT: LOAD TEST QUESTION");
     List<Question> result = [];
     print("$parentId̉");
     final maps = await requestApi<List<Map>, List<Map>>(

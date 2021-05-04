@@ -1,5 +1,5 @@
 // import 'package:game/screen/home/home_screen.dart';
-// import 'package:game/screen/study/study_screen.dart';
+// import 'package:game/screen/study/game_screen.dart';
 //
 // import 'routes.dart';
 // import 'package:flutter/material.dart';

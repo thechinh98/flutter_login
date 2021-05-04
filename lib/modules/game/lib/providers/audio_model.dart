@@ -36,7 +36,6 @@ class AudioModel extends ChangeNotifier {
       if (currentSound != null) {
         if (currentSound?.duration == null ||
             currentSound!.duration == Duration(seconds: 0)) {
-          print("SET DURATION: ${duration.toString()}");
           currentSound!.updateDuration(duration);
           notifyListeners();
         }

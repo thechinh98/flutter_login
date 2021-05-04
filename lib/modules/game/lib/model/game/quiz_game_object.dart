@@ -4,7 +4,6 @@ import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
 import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
-import 'package:game/screen/test/game_view/quiz/quiz_view.dart';
 class QuizGameObject extends GameObject {
   ParaGameObject? parent;
   String? questionId;
@@ -43,13 +42,13 @@ class QuizGameObject extends GameObject {
         break;
     }
   }
-  onTestAnswer(TestQuizAnswerParams params) {
+  onTestAnswer(QuizAnswerParams params) {
     switch (params.type){
-      case TestQuizAnswerType.choice_click:
+      case QuizAnswerType.choice_click:
         Choice clicked = params.choice;
         updateProgress(clicked);
         break;
-      case TestQuizAnswerType.continue_click:
+      case QuizAnswerType.continue_click:
         calculatePoint();
         break;
       default:
@@ -59,7 +58,6 @@ class QuizGameObject extends GameObject {
 
   updateProgress(Choice choice) {
     gameObjectStatus = GameObjectStatus.answered;
-    print("TEST GAME MODEL: Answered");
     if (answered.contains(choice)) {
       return;
     }
@@ -74,6 +72,7 @@ class QuizGameObject extends GameObject {
         ..selected = false;answered.removeAt(0);
     }
   }
+
   calculatePoint(){
     if (answered.length == correctNum) {
       int selectedCorrect = 0;

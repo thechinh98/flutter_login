@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/screen_logic.dart';
+import 'package:game/screen/game_screen.dart';
 import 'package:game/service/game_service.dart';
 import 'package:game/service/service.dart';
 import 'package:provider/provider.dart';
 
-class StudyLogic {
+class StudyLogic implements ScreenLogic{
   final String topicId;
   late StudyGameModel studyGameModel;
   late GameService gameService;
@@ -22,6 +23,7 @@ class StudyLogic {
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {
+    print("STUDY LOGIC: On Answer Study Logic");
     await studyGameModel.onAnswer(type, params);
   }
 
@@ -32,4 +34,5 @@ class StudyLogic {
   navigateAfterFinishingStudy() {
     gameService.navigateAfterFinishingStudy();
   }
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:game/model/core/question.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/progress.dart';
 import 'package:game/repository/sql_repository.dart';
@@ -20,6 +21,10 @@ class GameModel extends ChangeNotifier {
   bool get isLoading => listGames == null;
   bool isFinishGame = false;
   List<GameObject> listDone = <GameObject>[];
+
+  List<Question> questions = [];
+  String currentTopic = '';
+  GameObject? previousGame;
 
   resetListGame() {
     listGames = [];

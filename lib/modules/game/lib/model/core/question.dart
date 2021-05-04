@@ -60,7 +60,6 @@ class Question {
 
   getInfoQues(Map<String, dynamic> map) {
     id = map[columnId]?.toString() ?? "-1";
-    print(id);
     parentId = map[columnParentId]?.toString() ?? "-1";
     content = map[columnContent] ?? "";
     choices = [];

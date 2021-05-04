@@ -2,6 +2,7 @@ import 'package:auth/login/login_model.dart';
 import 'package:database/database_service.dart';
 import 'package:database/firebase_data_service_impl.dart';
 import 'package:game/providers/audio_model.dart';
+import 'package:game/providers/game_model.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
 import 'package:game/service/game_service_impl.dart';
@@ -41,7 +42,6 @@ class AppProvider {
     GameServiceInitializer().init(gameService);
     studyGameModel = StudyGameModel();
     testGameModel = TestGameModel();
-
     _dbService = FirebaseServiceImpl();
     _loginService = LoginServiceImpl(dbService);
 

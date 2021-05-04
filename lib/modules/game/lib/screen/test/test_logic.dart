@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:game/providers/test_game_model.dart';
-import 'package:game/screen/test/test_screen.dart';
+import 'package:game/screen/screen_logic.dart';
+import 'package:game/screen/game_screen.dart';
 import 'package:game/service/game_service.dart';
 import 'package:game/service/service.dart';
 import 'package:provider/provider.dart';
 
-class TestLogic {
+class TestLogic implements ScreenLogic{
   final String topicId;
   late TestGameModel testGameModel;
   late GameService gameService;

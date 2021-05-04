@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:game/components/new_my_sound.dart';
 import 'package:flutter/material.dart';
 import 'package:game/components/text_content.dart';
@@ -8,14 +9,17 @@ import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/screen/study/game_view/game_item_view.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/utils/constant.dart';
+
+import '../../../game_screen.dart';
 
 class QuizView extends StatelessWidget {
   final QuizGameObject gameObject;
   final ScrollController _scrollController = ScrollController();
   final OnAnswer? onAnswer;
+  final int gameType;
 
-  QuizView({this.onAnswer, required this.gameObject});
+  QuizView({this.onAnswer, required this.gameObject,required this.gameType,});
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -95,18 +99,27 @@ class QuizView extends StatelessWidget {
       return Container();
     }
   }
-  Container _renderImage(){
-    if(gameObject.question.image != null){
+
+  Container _renderImage() {
+    if (gameObject.question.image != null) {
       print(gameObject.question.image);
       return Container(
         width: double.infinity,
         height: 200,
         margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        child: Image.network(gameObject.question.image!,fit: BoxFit.contain,),
+        child: CachedNetworkImage(
+          imageUrl: gameObject.question.image!,
+          placeholder: (context, url) => new SizedBox(
+            child: CircularProgressIndicator(),
+            height: 10,
+            width: 10,
+          ),
+        ),
       );
     }
     return Container();
   }
+
   _renderSound() {
     if (gameObject.parent != null &&
         gameObject.parent!.question.sound != null &&
@@ -138,7 +151,7 @@ class QuizView extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             decoration: BoxDecoration(
-                color: _getChoiceColor(choice),
+                color: gameType == GAME_STUDY_MODE ? _getChoiceColor(choice) : _getTestChoiceColor(choice),
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: ListTile(
@@ -158,9 +171,6 @@ class QuizView extends StatelessWidget {
   }
 
   void choiceClicked(Choice e) {
-    if (gameObject.gameObjectStatus == GameObjectStatus.answered) {
-      return;
-    }
     QuizAnswerParams params = QuizAnswerParams(
         type: QuizAnswerType.choice_click,
         choice: e,
@@ -179,6 +189,22 @@ class QuizView extends StatelessWidget {
         } else {
           return Colors.red;
         }
+      } else {
+        return Colors.white;
+      }
+    } else {
+      if (gameObject.correctNum > 1) {
+        if (e.selected) {
+          return Colors.grey;
+        }
+      }
+      return Colors.white;
+    }
+  }
+  Color _getTestChoiceColor(Choice e) {
+    if (gameObject.gameObjectStatus == GameObjectStatus.answered) {
+      if (e.selected) {
+        return Colors.grey;
       } else {
         return Colors.white;
       }

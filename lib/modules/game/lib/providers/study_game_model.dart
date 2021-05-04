@@ -9,16 +9,11 @@ import 'package:game/model/game/progress.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/model/game/spelling_game_object.dart';
 import 'package:game/providers/game_model.dart';
+import 'package:game/screen/game_screen.dart';
 import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
-import 'package:game/screen/study/study_screen.dart';
 import 'package:game/service/service.dart';
 
 class StudyGameModel extends GameModel implements GamePlay {
-  List<Question> questions = [];
-  String currentTopic = '';
-  GameObject? previousGame;
-  List<GameObject> listDone = [];
-
   StudyGameModel() {
     this.gameService = GameServiceInitializer().gameService;
   }
@@ -31,9 +26,7 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     print('CHINHLT: StudyGameModel- load data - topic ID: $topicId');
 
-      quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
-
-    print('CHINHLT: StudyGameModel- load data - quesDb size: ${quesDb.length}');
+    quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
 
     Map<String, Question> mapQuestionHasChild = {};
     // Map<String, ParaGameObject> mapGameObjectHasChild = {};
@@ -69,8 +62,6 @@ class StudyGameModel extends GameModel implements GamePlay {
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
-    print(
-        'CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
     calcProgress();
     notifyListeners();
     onContinue();

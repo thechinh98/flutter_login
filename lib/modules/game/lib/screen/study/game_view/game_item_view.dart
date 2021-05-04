@@ -9,15 +9,16 @@ import 'package:game/screen/study/game_view/matching/matching_view.dart';
 import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/study/game_view/flash_card/flash_card_view.dart';
 import 'package:game/screen/study/game_view/spelling/spelling_view.dart';
-import 'package:game/screen/study/study_screen.dart';
 
+import '../../game_screen.dart';
 typedef OnAnswer<T>(AnswerType type, [T? params]);
 
 class GameItemView extends StatelessWidget {
   final GameObject gameObject;
   final OnAnswer? onAnswer;
+  final int gameType;
 
-  GameItemView({Key? key, required this.gameObject, this.onAnswer}) : super(key: key);
+  GameItemView({Key? key, required this.gameObject, this.onAnswer,required this.gameType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class GameItemView extends StatelessWidget {
       return QuizView(
         onAnswer: onAnswer,
         gameObject: gameObject as QuizGameObject,
+        gameType: gameType,
       );
     } else if (gameObject is FlashGameObject) {
       return FlashCardView(

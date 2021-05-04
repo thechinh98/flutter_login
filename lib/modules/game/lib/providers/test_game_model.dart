@@ -1,29 +1,23 @@
 import 'package:game/model/core/choice.dart';
 import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
-import 'package:game/model/game/flash_game_object.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/matching_game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
-import 'package:game/model/game/progress.dart';
 import 'package:game/model/game/quiz_game_object.dart';
-import 'package:game/model/game/spelling_game_object.dart';
 import 'package:game/providers/game_model.dart';
-import 'package:game/screen/test/game_view/quiz/quiz_view.dart';
-import 'package:game/screen/test/test_screen.dart';
+import 'package:game/screen/game_screen.dart';
+import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/service/service.dart';
 
 class TestGameModel extends GameModel implements GamePlay {
-  List<Question> questions = [];
-  String currentTopic = '';
-  GameObject? previousGame;
-  List<GameObject> listDone = [];
   int indexQuestion = 0;
   TestGameModel() {
     this.gameService = GameServiceInitializer().gameService;
   }
 
   loadData({required String topicId}) async {
+    indexQuestion = 0;
     resetListGame();
     questions.clear();
     this.currentTopic = topicId;
@@ -31,8 +25,6 @@ class TestGameModel extends GameModel implements GamePlay {
     print("CHINHLT: TestGameModel - load data - topic ID: $topicId");
     questionsDb =
         await gameService.loadTestQuestionsByParentId(parentId: topicId);
-    print(
-        "CHINHLT: TestGameMobel - load data - topic ID: ${questionsDb.length}");
     Map<String, Question> mapQuestionHasChild = {};
     questionsDb.forEach((element) {
       if (element.hasChild) {
@@ -60,8 +52,6 @@ class TestGameModel extends GameModel implements GamePlay {
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
-    print(
-        'CHINHLT: StudyGameModel- load data - listGame size: ${listGames!.length}');
     calcProgress();
     notifyListeners();
     onContinue();
@@ -71,12 +61,11 @@ class TestGameModel extends GameModel implements GamePlay {
     final iterator = questions.iterator;
     while (iterator.moveNext()) {
       final question = iterator.current;
-
       // TODO set game type
       final gameType = _getGameType();
       switch (gameType) {
         case GameType.QUIZ:
-          createQuizGameObject(question, choicesNum);
+          createQuizGameObject(question, question.choices!.length);
           break;
         default:
           break;
@@ -89,7 +78,9 @@ class TestGameModel extends GameModel implements GamePlay {
   }
 
   createQuizGameObject(Question question, int? choicesNum) {
+    print("QUESTION INDEX: $indexQuestion");
     final quiz = QuizGameObject.fromQuestion(question);
+    // Add fake choice base on choice in data
     if (choicesNum != null) {
       final numOfFakeChoices =
           choicesNum - quiz.choices.length < questions.length - 1
@@ -133,18 +124,14 @@ class TestGameModel extends GameModel implements GamePlay {
     switch (type) {
       case AnswerType.quiz:
         (currentGames as QuizGameObject)
-            .onTestAnswer(params as TestQuizAnswerParams);
+            .onTestAnswer(params as QuizAnswerParams);
         break;
       default:
         break;
     }
     updateGameProgress();
     calcProgress();
-    if (currentGames is FlashGameObject) {
-      onContinue();
-    } else {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   updateGameProgress<T>([T? params]) {
@@ -165,14 +152,15 @@ class TestGameModel extends GameModel implements GamePlay {
   calcProgress() {
     List<GameObject> resultList = [];
     resultList.addAll(listGames!);
-    resultList.addAll(listDone);
+    // resultList.addAll(listDone);
     if (currentGames != null &&
         currentGames!.gameObjectStatus == GameObjectStatus.waiting &&
         (currentGames is QuizGameObject ||
             currentGames is MatchingGameObject)) {
       resultList.add(currentGames!);
     }
-    gameProgress = Progress.calcProgress(resultList);
+    // Calculate Progress
+    // gameProgress = Progress.calcProgress(resultList);
   }
 
   @override

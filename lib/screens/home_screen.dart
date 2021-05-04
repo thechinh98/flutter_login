@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
-import 'package:game/screen/study/study_screen.dart';
+import 'package:game/screen/game_screen.dart';
+import 'package:game/utils/constant.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,11 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       RoundedButton(title: "PRACTICE", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => StudyScreen(testTopicId)));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE)));
                       }),
                       SizedBox(height: 30,),
                       RoundedButton(title: "TEST", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(type: 3,title: "Test")));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "Test")));
                       }, color: Colors.lightGreenAccent,),
                       SizedBox(height: 60,),
                       TextButton(

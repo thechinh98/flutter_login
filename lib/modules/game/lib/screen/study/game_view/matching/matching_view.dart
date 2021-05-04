@@ -4,7 +4,8 @@ import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/matching_game_object.dart';
 import 'package:game/screen/study/game_view/game_item_view.dart';
-import 'package:game/screen/study/study_screen.dart';
+
+import '../../../game_screen.dart';
 
 class MatchingView extends StatefulWidget {
   final MatchingGameObject gameObject;

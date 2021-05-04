@@ -22,7 +22,6 @@ class TopicModel extends ChangeNotifier {
     } else {
       print("TOPIC MODEL: Fetching data fail ");
     }
-    print("${topics.length}");
     notifyListeners();
   }
 }
