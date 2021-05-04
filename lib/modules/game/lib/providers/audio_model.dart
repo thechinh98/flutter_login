@@ -14,6 +14,7 @@ class AudioModel extends ChangeNotifier {
   StreamSubscription? _playerCompleteSubscription;
   StreamSubscription? _playerErrorSubscription;
   StreamSubscription? _playerStateSubscription;
+
   List<NewSoundData> sounds = [];
   List<NewSoundData> speakingPracticeSounds = [];
 
@@ -168,7 +169,9 @@ class AudioModel extends ChangeNotifier {
     speed = 1.0;
     try {
       stop();
-    } catch (e) {}
+    } catch (e) {
+      print("EXCEPTION AUDIO MODEL: $e");
+    }
   }
 
   play(NewSoundData? _soundData, [bool isLocal = false]) async {

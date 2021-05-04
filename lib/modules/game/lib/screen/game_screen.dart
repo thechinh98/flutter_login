@@ -73,6 +73,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int firstRun = 0;
   listener() async {
     audioModel = context.read<AudioModel>();
+    print("GAME SCREEN: LISTENER COUNTER: $firstRun");
     if (gameModel.listGames!.isNotEmpty) {
       if (audioModel.sounds.isEmpty && firstRun == 0) {
         firstRun++;
@@ -308,7 +309,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void dispose() {
     gameModel.removeListener(listener);
     gameModel.resetListGame();
-    audioModel.cancel();
+    audioModel.reset();
     super.dispose();
   }
 }

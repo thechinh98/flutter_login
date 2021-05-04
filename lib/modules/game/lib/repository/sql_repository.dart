@@ -147,7 +147,6 @@ class SqfliteRepository {
   Future<List<Question>> loadTestQuestionsByParentId(
       {required String parentId}) async {
     List<Question> result = [];
-    print("$parentId̉");
     final maps = await requestApi<List<Map>, List<Map>>(
       call: () => _db!.query(
         "$tableQuestion",
@@ -162,7 +161,6 @@ class SqfliteRepository {
         result.add(question);
       }
     }
-    print("question length: ${result.length}");
     return result;
   }
 }

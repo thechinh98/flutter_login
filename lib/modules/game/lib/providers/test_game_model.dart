@@ -11,13 +11,14 @@ import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/service/service.dart';
 
 class TestGameModel extends GameModel implements GamePlay {
-  int indexQuestion = 0;
+  // Because index ++ when onContinue is called at loadData
+  int indexQuestion = -1;
   TestGameModel() {
     this.gameService = GameServiceInitializer().gameService;
   }
 
   loadData({required String topicId}) async {
-    indexQuestion = 0;
+    indexQuestion = -1;
     resetListGame();
     questions.clear();
     this.currentTopic = topicId;
@@ -48,7 +49,7 @@ class TestGameModel extends GameModel implements GamePlay {
         } else {}
       });
     }
-    generateGame(questions, choicesNum: 4);
+    generateGame(questions);
     listGames!.sort((a, b) => (a.orderIndex! < b.orderIndex! ? -1 : 1));
 
     // notifyListeners();
@@ -78,7 +79,6 @@ class TestGameModel extends GameModel implements GamePlay {
   }
 
   createQuizGameObject(Question question, int? choicesNum) {
-    print("QUESTION INDEX: $indexQuestion");
     final quiz = QuizGameObject.fromQuestion(question);
     // Add fake choice base on choice in data
     if (choicesNum != null) {
