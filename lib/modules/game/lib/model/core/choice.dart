@@ -1,22 +1,5 @@
+import 'package:game/model/database_model/choice_database.dart';
 import 'package:uuid/uuid.dart';
-
-final String tableChoice = 'Choice';
-final String _columnId = 'id';
-final String _columnParentId = 'parentId';
-final String _columnSelected = 'selected';
-final String _columnTestId = 'testId';
-final String _columnContent = 'content';
-final String _columnIsCorrect = 'isCorrect';
-
-final String createChoiceTable = '''
-        create table IF NOT EXISTS $tableChoice (
-          $_columnId text primary key,
-          $_columnParentId text,
-          $_columnSelected boolean,
-          $_columnIsCorrect boolean,
-          // $_columnTestId text,
-          $_columnContent text not null)
-        ''';
 
 class Choice {
   String? id;
@@ -35,24 +18,24 @@ class Choice {
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
-      _columnContent: content,
-      _columnIsCorrect: isCorrect ? 1 : 0,
-      _columnSelected: selected ? 1 : 0,
-      _columnParentId: parentId
+      columnContent: content,
+      columnIsCorrect: isCorrect ? 1 : 0,
+      columnSelected: selected ? 1 : 0,
+      columnParentId: parentId
     };
     if (id != null) {
-      map[_columnId] = id;
+      map[columnId] = id;
     }
     return map;
   }
 
   factory Choice.fromMap(Map<String, dynamic> map, {int? questionId}) {
     Choice choice = Choice(
-        parentId: map[_columnParentId],
-        content: map[_columnContent],
-        isCorrect: (map[_columnIsCorrect] == 1) ? true : false);
-    choice.id = map[_columnId];
-    choice.selected = (map[_columnSelected] == 1) ? true : false;
+        parentId: map[columnParentId],
+        content: map[columnContent],
+        isCorrect: (map[columnIsCorrect] == 1) ? true : false);
+    choice.id = map[columnId];
+    choice.selected = (map[columnSelected] == 1) ? true : false;
 
     // content = map[_columnContent];
     // id = map[_columnId];

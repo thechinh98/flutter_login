@@ -23,7 +23,6 @@ class StudyLogic implements ScreenLogic{
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {
-    print("STUDY LOGIC: On Answer Study Logic");
     await studyGameModel.onAnswer(type, params);
   }
 

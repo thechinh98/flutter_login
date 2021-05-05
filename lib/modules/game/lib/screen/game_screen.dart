@@ -101,11 +101,22 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: Text('Game'),
+        actions: [
+          gameType == GAME_TEST_MODE
+              ? FlatButton(
+                  onPressed: () {
+                    print("SUBMIT BUTTON CLICK");
+                  },
+                  child: Text("Submit"),
+                  textColor: Colors.white,
+                )
+              : Container()
+        ],
       ),
       body: SafeArea(
         child: gameType == GAME_TEST_MODE
             ? Consumer(
-                builder: (_,TestGameModel gameModel, __) {
+                builder: (_, TestGameModel gameModel, __) {
                   if (gameModel.isFinishGame) {
                     return Center(
                       child: Column(
@@ -233,7 +244,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     // Check if finish or not
     return Container(
       child: MaterialButton(
-        onPressed:() {screenLogic.onContinue();},
+        onPressed: () {
+          screenLogic.onContinue();
+        },
         clipBehavior: Clip.antiAlias,
         animationDuration: Duration(milliseconds: 200),
         child: Container(
@@ -284,15 +297,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () {
         testGameModel.chooseGame(index);
+        Navigator.pop(context);
       },
       child: Container(
         width: 20,
         height: 20,
         decoration: BoxDecoration(
-          color: testGameModel.listGames![index].gameObjectStatus !=
-                  GameObjectStatus.answered
-              ? Colors.grey
-              : Colors.green,
+          color: _getQuestionColor(testGameModel, index),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
@@ -303,6 +314,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Color _getQuestionColor(TestGameModel testGameModel, int index) {
+    if (testGameModel.indexQuestion == index) {
+      return Colors.yellow;
+    }
+    if (testGameModel.listGames![index].gameObjectStatus ==
+        GameObjectStatus.answered) {
+      return Colors.green;
+    }
+    return Colors.grey;
   }
 
   @override

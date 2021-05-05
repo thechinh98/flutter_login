@@ -4,8 +4,6 @@ import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
 import 'package:provider/provider.dart';
 
-
-
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
 

@@ -27,6 +27,6 @@ class GameServiceImpl implements GameService {
   @override
   navigateAfterFinishingStudy() {
     NavigationService().pushNamedAndRemoveUntil(
-        ROUTE_AFTER_STUDY, (route) => route.settings.name == ROUTER_HOME);
+        ROUTE_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
   }
 }

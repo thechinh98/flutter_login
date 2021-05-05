@@ -137,11 +137,11 @@ class TestGameModel extends GameModel implements GamePlay {
   updateGameProgress<T>([T? params]) {
     if (currentGames!.gameObjectStatus == GameObjectStatus.answered) {
       listDone.add(currentGames!);
-    } else {
-      listGames!.add(currentGames!);
     }
   }
-
+  submitTest(){
+    gameService.navigateAfterFinishingStudy();
+  }
   chooseGame(int index) {
     currentGames = listGames![index];
     indexQuestion = index;
@@ -150,15 +150,15 @@ class TestGameModel extends GameModel implements GamePlay {
 
   @override
   calcProgress() {
-    List<GameObject> resultList = [];
-    resultList.addAll(listGames!);
-    // resultList.addAll(listDone);
-    if (currentGames != null &&
-        currentGames!.gameObjectStatus == GameObjectStatus.waiting &&
-        (currentGames is QuizGameObject ||
-            currentGames is MatchingGameObject)) {
-      resultList.add(currentGames!);
-    }
+    // List<GameObject> resultList = [];
+    // resultList.addAll(listGames!);
+    // // resultList.addAll(listDone);
+    // if (currentGames != null &&
+    //     currentGames!.gameObjectStatus == GameObjectStatus.waiting &&
+    //     (currentGames is QuizGameObject ||
+    //         currentGames is MatchingGameObject)) {
+    //   resultList.add(currentGames!);
+    // }
     // Calculate Progress
     // gameProgress = Progress.calcProgress(resultList);
   }
@@ -171,7 +171,7 @@ class TestGameModel extends GameModel implements GamePlay {
       return;
     }
     if (listGames!.isEmpty) {
-      return;
+      gameService.navigateAfterFinishingStudy();
     }
     // currentGames = listGames!.removeAt(0);
     // if (currentGames!.gameObjectStatus== GameObjectStatus.answered) {
@@ -224,4 +224,5 @@ class TestGameModel extends GameModel implements GamePlay {
     });
     return notAnswerString;
   }
+
 }

@@ -5,6 +5,7 @@ import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/providers/app_provider.dart';
 import 'package:flutter_login/screens/home_screen.dart';
 import 'package:game/repository/sql_repository.dart';
+import 'package:game/screen/result_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigationService.navigationKey,
         onGenerateRoute: generateRoute,
-        home: HomeScreen(),
+        home: ResultScreen(),
       ),
     );
   }
