@@ -32,7 +32,7 @@ class QuizGameObject extends GameObject {
         if (gameObjectStatus == GameObjectStatus.answered) {
           return;
         }
-        Choice clicked = params.choice;
+        Choice clicked = params.choice!;
         updateProgress(clicked);
         calculatePoint();
         break;
@@ -45,7 +45,7 @@ class QuizGameObject extends GameObject {
   onTestAnswer(QuizAnswerParams params) {
     switch (params.type){
       case QuizAnswerType.choice_click:
-        Choice clicked = params.choice;
+        Choice clicked = params.choice!;
         updateProgress(clicked);
         break;
       case QuizAnswerType.continue_click:
@@ -86,6 +86,7 @@ class QuizGameObject extends GameObject {
       }
     }
   }
+
   @override
   reset() {
     super.reset();

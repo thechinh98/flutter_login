@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NavigationService{
-  factory NavigationService(){
+  factory  NavigationService(){
     if(_this == null){
       _this = NavigationService._getInstance();
     }

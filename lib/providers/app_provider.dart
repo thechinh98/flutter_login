@@ -3,6 +3,7 @@ import 'package:database/database_service.dart';
 import 'package:database/firebase_data_service_impl.dart';
 import 'package:game/providers/audio_model.dart';
 import 'package:game/providers/game_model.dart';
+import 'package:game/providers/score_model.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
 import 'package:game/service/game_service_impl.dart';
@@ -29,6 +30,7 @@ class AppProvider {
   late StudyGameModel studyGameModel;
   late AudioModel audioModel;
   late TestGameModel testGameModel;
+  late ScoreModel scoreModel;
 
   late DatabaseService _dbService;
   late LoginService _loginService;
@@ -37,6 +39,7 @@ class AppProvider {
     topicModel = TopicModel();
     loginModel = LoginModel();
     audioModel = AudioModel();
+    scoreModel = ScoreModel();
 
     final gameService = GameServiceImpl();
     GameServiceInitializer().init(gameService);
@@ -54,6 +57,7 @@ class AppProvider {
     ChangeNotifierProvider(create: (_) => audioModel),
     ChangeNotifierProvider(create: (_) => studyGameModel),
     ChangeNotifierProvider(create: (_) => testGameModel),
+    ChangeNotifierProvider(create: (_) => scoreModel),
   ];
   LoginService get loginService => _loginService;
   DatabaseService get dbService => _dbService;

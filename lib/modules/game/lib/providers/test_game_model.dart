@@ -13,6 +13,8 @@ import 'package:game/service/service.dart';
 class TestGameModel extends GameModel implements GamePlay {
   // Because index ++ when onContinue is called at loadData
   int indexQuestion = -1;
+  int correctReadingAnswer = 0;
+  int correctListeningAnswer = 0;
   TestGameModel() {
     this.gameService = GameServiceInitializer().gameService;
   }
@@ -135,13 +137,15 @@ class TestGameModel extends GameModel implements GamePlay {
   }
 
   updateGameProgress<T>([T? params]) {
-    if (currentGames!.gameObjectStatus == GameObjectStatus.answered) {
+    if (currentGames!.gameObjectStatus == GameObjectStatus.answered && !listDone.contains(currentGames!)) {
       listDone.add(currentGames!);
     }
   }
-  submitTest(){
+
+  submitTest() {
     gameService.navigateAfterFinishingStudy();
   }
+
   chooseGame(int index) {
     currentGames = listGames![index];
     indexQuestion = index;
@@ -170,9 +174,9 @@ class TestGameModel extends GameModel implements GamePlay {
       onFinish();
       return;
     }
-    if (listGames!.isEmpty) {
-      gameService.navigateAfterFinishingStudy();
-    }
+    // if (listGames!.isEmpty) {
+    //   gameService.navigateAfterFinishingStudy();
+    // }
     // currentGames = listGames!.removeAt(0);
     // if (currentGames!.gameObjectStatus== GameObjectStatus.answered) {
     //   if (currentGames!.questionStatus == QuestionStatus.answeredIncorrect) {
@@ -189,6 +193,7 @@ class TestGameModel extends GameModel implements GamePlay {
   @override
   void onFinish() {
     isFinishGame = true;
+    _getTotalPoint();
     notifyListeners();
   }
 
@@ -196,33 +201,38 @@ class TestGameModel extends GameModel implements GamePlay {
     return listDone.isNotEmpty && listGames!.length == listDone.length;
   }
 
-  String? getTotalPoint() {
-    int correctPoint = 0;
-    int total = listDone.length;
-    if (isFinished()) {
-      listDone.forEach((element) {
-        if (element.questionStatus == QuestionStatus.answeredCorrect) {
-          correctPoint++;
+  _getTotalPoint() {
+    correctReadingAnswer = 0;
+    correctListeningAnswer = 0;
+    listDone.forEach((element) {
+      if (element.questionStatus == QuestionStatus.answeredCorrect) {
+        if (element.skill == 1 ||
+            element.skill == 2 ||
+            element.skill == 40 ||
+            element.skill == 41) {
+          correctListeningAnswer++;
+        } else if (element.skill == 3 ||
+            element.skill == 42 ||
+            element.skill == 43) {
+          correctReadingAnswer++;
         }
-      });
-      return "$correctPoint / $total";
-    } else {
-      return "You have not answered question ${_getNotAnsweredQuestion()}";
-    }
-  }
-
-  String _getNotAnsweredQuestion() {
-    List<int> notAnswerList = [];
-    String notAnswerString = "";
-    listGames!.asMap().forEach((key, value) {
-      if (value.gameObjectStatus != GameObjectStatus.answered) {
-        notAnswerList.add(key);
       }
     });
-    notAnswerList.forEach((element) {
-      notAnswerString = notAnswerString + "${element.toString()}, ";
-    });
-    return notAnswerString;
+    print(
+        "CORRECT LISTENING ANSWER: $correctListeningAnswer\nCORRECT READING ANSWER: $correctReadingAnswer");
   }
-
 }
+
+// String _getNotAnsweredQuestion() {
+//   List<int> notAnswerList = [];
+//   String notAnswerString = "";
+//   listGames!.asMap().forEach((key, value) {
+//     if (value.gameObjectStatus != GameObjectStatus.answered) {
+//       notAnswerList.add(key);
+//     }
+//   });
+//   notAnswerList.forEach((element) {
+//     notAnswerString = notAnswerString + "${element.toString()}, ";
+//   });
+//   return notAnswerString;
+// }

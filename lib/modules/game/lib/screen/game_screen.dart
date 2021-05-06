@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:game/providers/game_model.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
+import 'package:game/route/routes.dart';
 import 'package:game/screen/screen_logic.dart';
 import 'package:game/screen/study/game_view/game_item_view.dart';
+import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/study/study_logic.dart';
 import 'package:game/screen/study/study_progress.dart';
 import 'package:game/screen/test/test_logic.dart';
@@ -73,7 +75,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int firstRun = 0;
   listener() async {
     audioModel = context.read<AudioModel>();
-    print("GAME SCREEN: LISTENER COUNTER: $firstRun");
     if (gameModel.listGames!.isNotEmpty) {
       if (audioModel.sounds.isEmpty && firstRun == 0) {
         firstRun++;
@@ -105,7 +106,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           gameType == GAME_TEST_MODE
               ? FlatButton(
                   onPressed: () {
-                    print("SUBMIT BUTTON CLICK");
+                    (gameModel as TestGameModel).onFinish();
+                    audioModel.reset();
+                    Navigator.popAndPushNamed(context, ROUTER_RESULT_SCREEN);
                   },
                   child: Text("Submit"),
                   textColor: Colors.white,
@@ -245,6 +248,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Container(
       child: MaterialButton(
         onPressed: () {
+          QuizAnswerParams params = QuizAnswerParams(type: QuizAnswerType.continue_click,);
+          if(screenLogic.onAnswer != null){
+            screenLogic.onAnswer(AnswerType.quiz, params);
+          }
           screenLogic.onContinue();
         },
         clipBehavior: Clip.antiAlias,

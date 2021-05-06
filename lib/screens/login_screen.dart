@@ -2,6 +2,7 @@ import 'package:auth/login/login_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
+import 'package:game/route/routes.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {

@@ -1,4 +1,3 @@
-
 import 'package:game/model/core/question.dart';
 import 'package:game/repository/sql_repository.dart';
 import 'package:game/route/router_service.dart';
@@ -27,6 +26,6 @@ class GameServiceImpl implements GameService {
   @override
   navigateAfterFinishingStudy() {
     NavigationService().pushNamedAndRemoveUntil(
-        ROUTE_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
+        ROUTER_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
   }
 }

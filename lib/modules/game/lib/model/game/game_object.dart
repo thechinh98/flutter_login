@@ -12,6 +12,7 @@ class GameObject {
   GameObjectStatus gameObjectStatus = GameObjectStatus.waiting;
   QuestionStatus questionStatus = QuestionStatus.notAnswerYet;
   double? orderIndex;
+  int? skill;
 
   // GameObject();
 
@@ -24,7 +25,7 @@ class GameObject {
     if (questionDb.hint != null && questionDb.hint!.isNotEmpty) {
       hint = Face(content: questionDb.hint);
     }
-
+    skill = questionDb.skill;
     orderIndex = questionDb.orderIndex;
   }
 

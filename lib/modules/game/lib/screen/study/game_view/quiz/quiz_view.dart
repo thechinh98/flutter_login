@@ -152,7 +152,10 @@ class QuizView extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             decoration: BoxDecoration(
                 color: gameType == GAME_STUDY_MODE ? _getChoiceColor(choice) : _getTestChoiceColor(choice),
-                border: Border.all(color: Colors.grey),
+                border: Border.all(
+                    color: (CONFIG_TEST_MODE && choice.isCorrect)
+                        ? Colors.red
+                        : Colors.grey),
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: ListTile(
               title: TextContent(
@@ -223,12 +226,12 @@ enum QuizAnswerType { choice_click, continue_click }
 
 class QuizAnswerParams {
   QuizAnswerType type;
-  Choice choice;
+  Choice? choice;
   String? questionId;
 
   QuizAnswerParams({
     required this.type,
-    required this.choice,
-    required this.questionId,
+    this.choice,
+    this.questionId,
   });
 }
