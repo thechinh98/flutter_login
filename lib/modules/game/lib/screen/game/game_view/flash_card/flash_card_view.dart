@@ -4,7 +4,7 @@ import 'package:game/components/flip_card.dart';
 import 'package:game/components/new_my_sound.dart';
 import 'package:game/components/text_content.dart';
 import 'package:game/model/game/flash_game_object.dart';
-import 'package:game/screen/study/game_view/game_item_view.dart';
+import 'package:game/screen/game/game_view/game_item_view.dart';
 
 import '../../../game_screen.dart';
 class FlashCardView extends StatefulWidget {

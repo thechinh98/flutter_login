@@ -3,7 +3,7 @@ import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
-import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
+import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
 class QuizGameObject extends GameObject {
   ParaGameObject? parent;
   String? questionId;

@@ -9,8 +9,8 @@ import 'package:game/model/game/progress.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/model/game/spelling_game_object.dart';
 import 'package:game/providers/game_model.dart';
+import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/game_screen.dart';
-import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/service/service.dart';
 
 class StudyGameModel extends GameModel implements GamePlay {

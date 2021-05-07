@@ -54,7 +54,7 @@ class SqfliteRepository {
       }
     }
     String path = join(documentsDirectory.path, appDbName);
-    print("pathxxx: $path");
+    print("path: $path");
     // Only copy if the database doesn't exist
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
       // Load database from asset and copy

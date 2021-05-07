@@ -4,7 +4,7 @@ import 'package:game/model/core/face.dart';
 import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/spelling_game_object.dart';
-import 'package:game/screen/study/game_view/game_item_view.dart';
+import 'package:game/screen/game/game_view/game_item_view.dart';
 import 'package:game/screen/game_screen.dart';
 import 'package:game/utils/constant.dart';
 class SpellAnswerParams {

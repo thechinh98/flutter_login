@@ -5,10 +5,11 @@ import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/model/game/spelling_game_object.dart';
 
 import 'package:flutter/material.dart';
-import 'package:game/screen/study/game_view/matching/matching_view.dart';
-import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
-import 'package:game/screen/study/game_view/flash_card/flash_card_view.dart';
-import 'package:game/screen/study/game_view/spelling/spelling_view.dart';
+import 'package:game/screen/game/game_view/flash_card/flash_card_view.dart';
+import 'package:game/screen/game/game_view/matching/matching_view.dart';
+import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
+import 'package:game/screen/game/game_view/spelling/spelling_view.dart';
+
 
 import '../../game_screen.dart';
 typedef OnAnswer<T>(AnswerType type, [T? params]);

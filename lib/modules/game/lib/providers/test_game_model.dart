@@ -6,8 +6,8 @@ import 'package:game/model/game/matching_game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/providers/game_model.dart';
+import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/game_screen.dart';
-import 'package:game/screen/study/game_view/quiz/quiz_view.dart';
 import 'package:game/service/service.dart';
 
 class TestGameModel extends GameModel implements GamePlay {
@@ -218,8 +218,6 @@ class TestGameModel extends GameModel implements GamePlay {
         }
       }
     });
-    print(
-        "CORRECT LISTENING ANSWER: $correctListeningAnswer\nCORRECT READING ANSWER: $correctReadingAnswer");
   }
 }
 
