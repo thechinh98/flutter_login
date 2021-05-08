@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
+import 'package:game/model/database_model/topic_database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -21,20 +22,30 @@ class SQLiteRepository{
   SQLiteRepository._getInstance();
   static const DB_VERSION = 1;
   Database? _db;
+  Database? _ieltsDb;
   String appDbName = 'data-$DB_VERSION.db';
   String dataDbName = 'data.db';
   String userDbName = 'user_data.db';
-  Database get moduleDb => _db!;
+
+  String ieltsAppDbName = 'ielts-$DB_VERSION.db';
+  String ieltsDataDbName = 'ielts.db';
+  String userIeltsDbName = 'user_ielts_data.db';
+  Database get moduleDB => _db!;
+  Database get ieltsDB => _ieltsDb!;
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _checkAndCopyDatabase();
+    await _checkAndCopyIeltsDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, appDbName);
     _db = await   openDatabase(path);
 
+    String pathIelts = join(documentsDirectory.path, ieltsAppDbName);
+    _ieltsDb = await openDatabase(pathIelts);
+
     await _createTable(_db);
-    return _db;
+    await _createTable(_ieltsDb);
   }
 
   _checkAndCopyDatabase() async {
@@ -73,10 +84,47 @@ class SQLiteRepository{
           "dbName found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
+  _checkAndCopyIeltsDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    List<FileSystemEntity> files = documentsDirectory.listSync();
+    for (var file in files) {
+      String fileName = file.path.split('/').last;
+      if (fileName.endsWith('.db') &&
+          fileName.startsWith('ielts') &&
+          !fileName.startsWith('ielts-$DB_VERSION.db')) {
+        file.deleteSync(recursive: true);
+      }
+    }
+    String path = join(documentsDirectory.path, ieltsAppDbName);
+    print("path: $path");
+    // Only copy if the database doesn't exist
+    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+      // Load database from asset and copy
+      print(
+          "dbName not found $ieltsAppDbName documentsDirectory.path: ${documentsDirectory.path}");
+      ByteData data;
+      try {
+        data = await rootBundle
+            .load(join('packages/game/assets/data/', ieltsDataDbName));
+      } catch (e) {
+        data = await rootBundle.load(join('assets/data/', ieltsDataDbName));
+      }
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // Save copied asset to documents
+      await new File(path).writeAsBytes(bytes);
+      print(
+          "dbName $ieltsAppDbName copy success documentsDirectory.path: ${documentsDirectory.path}");
+    } else {
+      print(
+          "dbName found $ieltsAppDbName documentsDirectory.path: ${documentsDirectory.path}");
+    }
+  }
 
   Future _createTable(db) async {
     await db.transaction((txn) async {
       await txn.execute(createQuestionTable);
+      // await txn.execute(createTopicTable);
     });
   }
 }

@@ -6,7 +6,6 @@ class LoginServiceImpl implements LoginService {
   LoginServiceImpl(this.dbService);
   @override
   int func() {
-    dbService.func();
     return 2;
   }
 

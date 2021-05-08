@@ -19,7 +19,7 @@ class TestGameModel extends GameModel implements GamePlay {
     this.gameService = GameServiceInitializer().gameService;
   }
 
-  loadData({required String topicId}) async {
+  loadData({required String topicId,required subjectType}) async {
     indexQuestion = -1;
     resetListGame();
     questions.clear();
@@ -27,7 +27,7 @@ class TestGameModel extends GameModel implements GamePlay {
     List<Question> questionsDb = [];
     print("CHINHLT: TestGameModel - load data - topic ID: $topicId");
     questionsDb =
-        await gameService.loadTestQuestionsByParentId(parentId: topicId);
+        await gameService.loadTestQuestionsByParentId(parentId: topicId, subjectType: subjectType);
     Map<String, Question> mapQuestionHasChild = {};
     questionsDb.forEach((element) {
       if (element.hasChild) {

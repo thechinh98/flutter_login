@@ -8,17 +8,18 @@ import 'package:provider/provider.dart';
 
 class TestLogic implements ScreenLogic{
   final String topicId;
+  final int subjectType;
   late TestGameModel testGameModel;
   late GameService gameService;
   BuildContext context;
 
-  TestLogic({required this.context, required this.topicId}) {
+  TestLogic({required this.context, required this.topicId,required this.subjectType}) {
     testGameModel = context.read<TestGameModel>();
     gameService = GameServiceInitializer().gameService;
   }
 
   loadData() async {
-    await testGameModel.loadData(topicId: topicId);
+    await testGameModel.loadData(topicId: topicId,subjectType: subjectType);
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {

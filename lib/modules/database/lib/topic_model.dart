@@ -7,16 +7,20 @@ class TopicModel extends ChangeNotifier {
   List<Topic> topics = [];
   int currentTopicType = 0;
   DatabaseService dbService = FirebaseServiceImpl();
-  loadData({required int type}) async {
+  loadData({required int type,required int gameType,required String parentId}) async {
     topics.clear();
     this.currentTopicType = type;
     List<Topic> topicDb = [];
 
     print("CHINHLT: TOPIC MODEL - load data - topic type: $type");
-    topicDb = await dbService.loadTopicByType(type);
+    topicDb = await dbService.loadTopicByType(type, gameType, parentId: parentId);
     if (topicDb.isNotEmpty) {
       topicDb.forEach((element) {
-        topics.add(element);
+        if(type == 1 && element.shortDes!.isEmpty) {
+          return;
+        } else {
+          topics.add(element);
+        }
       });
       print("CHINHLT: TOPIC MODEL - load data - successfully");
     } else {

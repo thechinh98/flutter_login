@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:database/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game/model/core/question.dart';
@@ -24,22 +25,29 @@ class SqfliteRepository {
   SqfliteRepository._getInstance();
 
   static const DB_VERSION = 1;
-  Database? _db;
+  Database? _toeicDb;
+  Database? _ieltsDb;
   String appDbName = 'data-$DB_VERSION.db';
   String dataDbName = 'data.db';
   String userDbName = 'user_data.db';
 
-  Database get moduleDB => _db!;
+  String ieltsAppDbName = 'ielts-$DB_VERSION.db';
+  String ieltsDataDbName = 'ielts.db';
+  String userIeltsDbName = 'user_ielts_data.db';
+  Database get moduleDB => _toeicDb!;
+  Database get ieltsDB => _ieltsDb!;
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _checkAndCopyDatabase();
+    await _checkAndCopyIeltsDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, appDbName);
-    _db = await openDatabase(path);
-
-    await _createTable(_db);
-    return _db;
+    String pathIelts = join(documentsDirectory.path, ieltsAppDbName);
+    _toeicDb = await openDatabase(path);
+    _ieltsDb = await openDatabase(pathIelts);
+    await _createTable(_toeicDb);
+    await _createTable(_ieltsDb);
   }
 
   _checkAndCopyDatabase() async {
@@ -71,11 +79,46 @@ class SqfliteRepository {
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Save copied asset to documents
       await new File(path).writeAsBytes(bytes);
-      print(
-          "dbName $appDbName copy successs documentsDirectory.path: ${documentsDirectory.path}");
     } else {
       print(
           "dbName found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
+    }
+  }
+
+  _checkAndCopyIeltsDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    List<FileSystemEntity> files = documentsDirectory.listSync();
+    for (var file in files) {
+      String fileName = file.path.split('/').last;
+      if (fileName.endsWith('.db') &&
+          fileName.startsWith('ielts') &&
+          !fileName.startsWith('ielts-$DB_VERSION.db')) {
+        file.deleteSync(recursive: true);
+      }
+    }
+    String path = join(documentsDirectory.path, ieltsAppDbName);
+    print("path: $path");
+    // Only copy if the database doesn't exist
+    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+      // Load database from asset and copy
+      print(
+          "dbName not found $ieltsAppDbName documentsDirectory.path: ${documentsDirectory.path}");
+      ByteData data;
+      try {
+        data = await rootBundle
+            .load(join('packages/game/assets/data/', ieltsDataDbName));
+      } catch (e) {
+        data = await rootBundle.load(join('assets/data/', ieltsDataDbName));
+      }
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // Save copied asset to documents
+      await new File(path).writeAsBytes(bytes);
+      print(
+          "dbName $ieltsAppDbName copy successs documentsDirectory.path: ${documentsDirectory.path}");
+    } else {
+      print(
+          "dbName found $ieltsAppDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
 
@@ -100,7 +143,7 @@ class SqfliteRepository {
     sql += ')';
     List<Map<String, dynamic>> maps = await requestApi<
         List<Map<String, dynamic>>, List<Map<String, dynamic>>>(
-      call: () => _db!.rawQuery(sql),
+      call: () => _toeicDb!.rawQuery(sql),
       defaultValue: [],
     );
     if (maps.length > 0) {
@@ -124,7 +167,7 @@ class SqfliteRepository {
       {required String parentId}) async {
     List<Question> result = [];
     final maps = await requestApi<List<Map>, List<Map>>(
-      call: () => _db!.query(
+      call: () => _toeicDb!.query(
         "$tableQuestion",
         where: '"parentId" = $parentId',
       ),
@@ -145,10 +188,36 @@ class SqfliteRepository {
   }
 
   Future<List<Question>> loadTestQuestionsByParentId(
+      {required String parentId,required gameType}) async {
+    Database? _tempDb;
+    List<Question> result = [];
+    if(gameType == ieltsSubject){
+      _tempDb = _ieltsDb;
+    } else if(gameType == toeicSubject){
+      _tempDb = _toeicDb;
+    }
+    final maps = await requestApi<List<Map>, List<Map>>(
+      call: () => _tempDb!.query(
+        "$tableQuestion",
+        where: '"parentId" = $parentId',
+      ),
+      defaultValue: [],
+    );
+
+    if (maps.length > 0) {
+      for (var item in maps) {
+        Question question = Question.fromJson(item as Map<String, dynamic>);
+        result.add(question);
+      }
+    }
+    return result;
+  }
+
+  Future<List<Question>> loadIeltsQuestionsByParentId(
       {required String parentId}) async {
     List<Question> result = [];
     final maps = await requestApi<List<Map>, List<Map>>(
-      call: () => _db!.query(
+      call: () => _ieltsDb!.query(
         "$tableQuestion",
         where: '"parentId" = $parentId',
       ),

@@ -1,4 +1,5 @@
 import 'package:auth/login/login_model.dart';
+import 'package:database/constant.dart';
 import 'package:database/topic_list_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,12 +49,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       RoundedButton(title: "PRACTICE", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE)));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE, subjectType: toeicSubject,)));
                       }),
                       SizedBox(height: 30,),
                       RoundedButton(title: "TEST", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "Test")));
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOIEC Test", subjectType: toeicSubject, type: 3, parentId: "",)));
                       }, color: Colors.lightGreenAccent,),
+                      SizedBox(height: 30,),
+                      RoundedButton(title: "IELTS", press: () {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "IELTS",subjectType: ieltsSubject, type: 1,parentId: "",)));
+                      }, color: Colors.red,),
                       SizedBox(height: 60,),
                       TextButton(
                         child: Text(

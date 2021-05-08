@@ -13,8 +13,8 @@ class GameServiceImpl implements GameService {
 
   @override
   Future<List<Question>> loadTestQuestionsByParentId(
-      {required String parentId}) async {
-    return await SqfliteRepository().loadTestQuestionsByParentId(parentId: parentId);
+      {required String parentId, required int subjectType}) async {
+    return await SqfliteRepository().loadTestQuestionsByParentId(parentId: parentId, gameType: subjectType);
   }
 
   @override
@@ -27,5 +27,10 @@ class GameServiceImpl implements GameService {
   navigateAfterFinishingStudy() {
     NavigationService().pushNamedAndRemoveUntil(
         ROUTER_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
+  }
+
+  @override
+  Future<List<Question>> loadIeltsQuestionsByParentId({required String parentId}) async {
+    return await SqfliteRepository().loadIeltsQuestionsByParentId(parentId: parentId);
   }
 }

@@ -25,7 +25,8 @@ enum StudyType { study, practice }
 class GameScreen extends StatefulWidget {
   final String topicId;
   final int gameType;
-  GameScreen({required this.topicId, required this.gameType});
+  final int subjectType;
+  GameScreen({required this.topicId, required this.gameType, required this.subjectType});
 
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -34,7 +35,7 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   String get topicId => widget.topicId;
   int get gameType => widget.gameType;
-
+  int get subjectType => widget.subjectType;
   late ScreenLogic screenLogic;
   late GameModel gameModel;
   bool isSoundDataLoaded = false;
@@ -52,7 +53,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       gameModel = context.read<StudyGameModel>();
     } else if (gameType == GAME_TEST_MODE) {
       print("CHINHLT: GAME_SCREEN: Init state TEST MODE");
-      screenLogic = TestLogic(context: context, topicId: topicId);
+      screenLogic = TestLogic(context: context, topicId: topicId, subjectType: subjectType);
       gameModel = context.read<TestGameModel>();
     }
 

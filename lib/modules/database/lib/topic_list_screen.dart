@@ -1,3 +1,4 @@
+import 'package:database/constant.dart';
 import 'package:database/sql_repository.dart';
 import 'package:database/topic_item_view.dart';
 import 'package:database/topic_model.dart';
@@ -9,20 +10,32 @@ import 'dart:math';
 
 class TopicListScreen extends StatefulWidget {
   final String title;
-  const TopicListScreen({Key? key,required this.title}) : super(key: key);
+  final int subjectType;
+  final int type;
+  final String parentId;
+  const TopicListScreen(
+      {Key? key,
+      required this.title,
+      required this.subjectType,
+      required this.type,
+      required this.parentId})
+      : super(key: key);
   @override
   _TopicListScreenState createState() => _TopicListScreenState();
 }
 
 class _TopicListScreenState extends State<TopicListScreen> {
   late TopicModel topicModel;
+  int get subjectType => widget.subjectType;
+  int get type => widget.type;
+  String get parentId => widget.parentId;
   @override
   void initState() {
     // TODO: implement initState
     print(
         "CHINHLT: Topic List Screen - init state: Topic mode: ${context.read<TopicModel>()}");
     topicModel = context.read<TopicModel>();
-    topicModel.loadData(type: 3);
+    topicModel.loadData(type: type, gameType: subjectType, parentId: parentId);
     super.initState();
   }
 
@@ -42,14 +55,39 @@ class _TopicListScreenState extends State<TopicListScreen> {
                     itemCount: _topicModel.topics.length,
                     itemBuilder: (BuildContext context, int index) =>
                         TopicItemView(
-                            topicNumber: _topicModel.topics[index].title!,
+                            topicNumber: _topicModel.topics[index].title!
+                                .replaceAll("\n", " "),
                             topicDetail: _topicModel.topics[index].shortDes!,
                             press: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => GameScreen(topicId:_topicModel.topics[index].id!,gameType: GAME_TEST_MODE,)));
+                              if (subjectType == ieltsSubject && type == 1) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TopicListScreen(
+                                      title:
+                                          "IELTS ${_topicModel.topics[index].title!}",
+                                      subjectType: ieltsSubject,
+                                      type: 2,
+                                      parentId: _topicModel.topics[index].id!,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GameScreen(
+                                      topicId: _topicModel.topics[index].id!,
+                                      gameType: GAME_TEST_MODE,
+                                      subjectType: subjectType,
+                                    ),
+                                  ),
+                                );
+                              }
                             }),
                   )
                 : Center(
-                    child: Text("Empty Topic Data"),
+                    child: CircularProgressIndicator(),
                   ),
           );
         }),
