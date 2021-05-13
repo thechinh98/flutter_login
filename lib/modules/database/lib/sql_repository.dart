@@ -60,12 +60,12 @@ class SQLiteRepository{
       }
     }
     String path = join(documentsDirectory.path, appDbName);
-    print("PATH: $path");
+    // print("PATH: $path");
     // Only copy if the database doesn't exist
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
       // Load database from asset and copy
-      print(
-          "dbName not found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
+      // print(
+          // "dbName not found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
       ByteData data;
       try {
         data = await rootBundle
@@ -77,11 +77,11 @@ class SQLiteRepository{
       data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Save copied asset to documents
       await new File(path).writeAsBytes(bytes);
-      print(
-          "dbName $appDbName copy success documentsDirectory.path: ${documentsDirectory.path}");
+      // print(
+      //     "dbName $appDbName copy success documentsDirectory.path: ${documentsDirectory.path}");
     } else {
-      print(
-          "dbName found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
+      // print(
+      //     "dbName found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
   _checkAndCopyIeltsDatabase() async {

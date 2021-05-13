@@ -35,44 +35,46 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: SizedBox(
             width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Xin chào, ${_loginModel.account.username ?? ''}", style: TextStyle(fontSize: 20),),
-                SizedBox(height: 90,),
-                // Container(
-                //   padding: EdgeInsets.symmetric(horizontal: 20),
-                //   child: Image.network("kstoeic/images/9907982_1564544773555.png",fit: BoxFit.fitWidth,),
-                // ),
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RoundedButton(title: "PRACTICE", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE, subjectType: toeicSubject,)));
-                      }),
-                      SizedBox(height: 30,),
-                      RoundedButton(title: "TEST", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOIEC Test", subjectType: toeicSubject, type: 3, parentId: "",)));
-                      }, color: Colors.lightGreenAccent,),
-                      SizedBox(height: 30,),
-                      RoundedButton(title: "IELTS", press: () {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "IELTS",subjectType: ieltsSubject, type: 1,parentId: "",)));
-                      }, color: Colors.red,),
-                      SizedBox(height: 60,),
-                      TextButton(
-                        child: Text(
-                          'Logout',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        onPressed: () {
-                          logout();
-                        },
-                      )
-                    ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Xin chào, ${_loginModel.account.username ?? ''}", style: TextStyle(fontSize: 20),),
+                  SizedBox(height: 90,),
+                  // Container(
+                  //   padding: EdgeInsets.symmetric(horizontal: 20),
+                  //   child: Image.network("kstoeic/images/9907982_1564544773555.png",fit: BoxFit.fitWidth,),
+                  // ),
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RoundedButton(title: "PRACTICE", press: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE, subjectType: toeicSubject,)));
+                        }),
+                        SizedBox(height: 30,),
+                        RoundedButton(title: "TEST", press: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOIEC Test", subjectType: toeicSubject, type: 3, parentId: "",)));
+                        }, color: Colors.lightGreenAccent,),
+                        SizedBox(height: 30,),
+                        RoundedButton(title: "IELTS", press: () {
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "IELTS",subjectType: ieltsSubject, type: 1,parentId: "",)));
+                        }, color: Colors.red,),
+                        SizedBox(height: 60,),
+                        TextButton(
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            logout();
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

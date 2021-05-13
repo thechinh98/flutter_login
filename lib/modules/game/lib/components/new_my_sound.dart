@@ -36,8 +36,15 @@ class _NewGameSoundState extends State<NewGameSound> {
       return;
     }
     soundsModel = context.read<AudioModel>();
-    soundData = soundsModel.sounds.firstWhereOrNull(
-        (element) => element.questionId == widget.questionId);
+    if(soundsModel.sounds.isNotEmpty) {
+      soundData = soundsModel.sounds.firstWhereOrNull(
+              (element) => element.questionId == widget.questionId);
+    } else if(soundsModel.speakingPracticeSounds.isNotEmpty){
+      soundData = soundsModel.speakingPracticeSounds.firstWhereOrNull(
+              (element) => element.questionId == widget.questionId);
+    } else {
+      print("NEW MY SOUND: Can not render new my sound");
+    }
     if (soundsModel.isPlaylistMode) {
       // che do playlist thi ko cho phep auto play tu day
       return;

@@ -11,15 +11,16 @@ class StudyLogic implements ScreenLogic{
   final String topicId;
   late StudyGameModel studyGameModel;
   late GameService gameService;
+  late int subjectType;
   BuildContext context;
 
-  StudyLogic({required this.context, required this.topicId}) {
+  StudyLogic({required this.context, required this.topicId, required this.subjectType}) {
     studyGameModel = context.read<StudyGameModel>();
     gameService = GameServiceInitializer().gameService;
   }
 
   loadData() async {
-    await studyGameModel.loadData(topicId: topicId);
+    await studyGameModel.loadData(topicId: topicId, subjectType: subjectType);
   }
 
   Future onAnswer<T>(AnswerType type, [T? params]) async {

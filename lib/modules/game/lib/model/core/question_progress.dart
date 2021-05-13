@@ -1,7 +1,7 @@
 // Dart imports:
 import 'dart:convert';
 
-import 'file:///D:/CodeSample/Flutter/flutter_login/lib/modules/game/lib/model/core/question.dart';
+import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/database_model/question_progress_database.dart';
 

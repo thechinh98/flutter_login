@@ -1,3 +1,4 @@
+import 'package:database/constant.dart';
 import 'package:game/model/core/choice.dart';
 import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
@@ -18,7 +19,7 @@ class StudyGameModel extends GameModel implements GamePlay {
     this.gameService = GameServiceInitializer().gameService;
   }
 
-  loadData({required String topicId}) async {
+  loadData({required String topicId, required int subjectType}) async {
     resetListGame();
     questions.clear();
     this.currentTopic = topicId;
@@ -26,12 +27,13 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     print('CHINHLT: StudyGameModel- load data - topic ID: $topicId');
 
-    quesDb = await gameService.loadQuestionsByParentId(parentId: topicId);
+    quesDb = await gameService.loadQuestionsByParentId(
+        parentId: topicId, subjectType: subjectType);
 
     Map<String, Question> mapQuestionHasChild = {};
     // Map<String, ParaGameObject> mapGameObjectHasChild = {};
     quesDb.forEach((element) {
-      if (element.hasChild) {
+      if (element.hasChild && element.skill != -400) {
         mapQuestionHasChild.putIfAbsent(element.id!, () => element);
         // mapGameObjectHasChild.putIfAbsent(element.id, () => ParaGameObject.fromQuestion(element));
       } else {
@@ -41,14 +43,14 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     List<Question> childQuestions = [];
     if (mapQuestionHasChild.isNotEmpty) {
-      childQuestions =
-          await gameService.loadChildQuestionList(mapQuestionHasChild);
+      childQuestions = await gameService.loadChildQuestionList(
+          mapQuestionHasChild, subjectType);
       childQuestions.forEach((element) {
         if (element.choices!.isNotEmpty) {
           Question? parentQuestion = mapQuestionHasChild[element.parentId!];
           if (parentQuestion != null) {
             element.parentQues = parentQuestion;
-            element.sound = parentQuestion.sound;
+            // element.sound = parentQuestion.sound;
           }
           questions.add(element);
         } else {
@@ -74,10 +76,10 @@ class StudyGameModel extends GameModel implements GamePlay {
         final question = iterator.current;
 
         // TODO set game type
-        final gameType = _getGameType();
+        final gameType = _getGameType(question);
         switch (gameType) {
           case GameType.QUIZ:
-            createQuizGameObject(question, choicesNum);
+            createQuizGameObject(question, question.choices!.length);
             break;
           case GameType.FLASH_CARD:
             final flashGame = FlashGameObject.fromQuestion(question);
@@ -97,6 +99,10 @@ class StudyGameModel extends GameModel implements GamePlay {
               listGames!.add(matchingGame);
             }
             break;
+          case GameType.PARAGRAPH:
+            final paragraphGame = ParaGameObject.fromQuestion(question);
+            listGames!.add(paragraphGame);
+            break;
           default:
             break;
         }
@@ -104,7 +110,25 @@ class StudyGameModel extends GameModel implements GamePlay {
     }
   }
 
-  GameType _getGameType() {
+  ParaGameObject createParagraphGameWithId(String paraGameId) {
+    ParaGameObject paraGameObject = listGames!
+        .firstWhere((element) => element.id == paraGameId) as ParaGameObject;
+    listGames!.forEach((element) {
+      if (element is QuizGameObject) {
+        if(element.parent!.id == paraGameId){
+          paraGameObject.children.add(element);
+        }
+      }
+    });
+    return paraGameObject;
+  }
+
+  GameType _getGameType(Question? question) {
+    if (question!.skill == 0 && question.type == 0) {
+      return GameType.FLASH_CARD;
+    } else if (question.skill == -400 && question.type == 1) {
+      return GameType.PARAGRAPH;
+    }
     return GameType.QUIZ;
   }
 
@@ -146,7 +170,6 @@ class StudyGameModel extends GameModel implements GamePlay {
         quiz.parent = mapHasChild[key!];
       }
     }
-
     listGames!.add(quiz);
   }
 

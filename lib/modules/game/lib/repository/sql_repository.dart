@@ -129,21 +129,24 @@ class SqfliteRepository {
   }
 
   Future<List<Question>> loadChildQuestionList(
-      Map<String, Question> mapHasChild) async {
+      Map<String, Question> mapHasChild, int subjectType) async {
     List<Question> results = [];
     String sql = '''
-    select *
-    from $tableQuestion as q
-    where q.parentId in (
-    ''';
+    select * from $tableQuestion as q where q.parentId in ( ''';
     mapHasChild.forEach((String key, Question question) {
       sql += '$key,';
     });
     sql = sql.substring(0, sql.length - 1);
     sql += ')';
+    Database? _tempDb;
+    if(subjectType == ieltsSubject){
+      _tempDb = _ieltsDb;
+    } else if(subjectType == toeicSubject){
+      _tempDb = _toeicDb;
+    }
     List<Map<String, dynamic>> maps = await requestApi<
         List<Map<String, dynamic>>, List<Map<String, dynamic>>>(
-      call: () => _toeicDb!.rawQuery(sql),
+      call: () => _tempDb!.rawQuery(sql),
       defaultValue: [],
     );
     if (maps.length > 0) {
@@ -155,7 +158,7 @@ class SqfliteRepository {
           parentOrderIndex = 0;
         }
         question.orderIndex =
-            parentOrderIndex + (parentOrderIndex + question.orderIndex!) / 100;
+            parentOrderIndex + (parentOrderIndex + question.orderIndex!) / 10;
         // print(parentOrderIndex);
         results.add(question);
       });
@@ -164,10 +167,16 @@ class SqfliteRepository {
   }
 
   Future<List<Question>> loadQuestionsByParentId(
-      {required String parentId}) async {
+      {required String parentId, required int subjectType}) async {
     List<Question> result = [];
+    Database? _tempDb;
+    if(subjectType == ieltsSubject){
+      _tempDb = _ieltsDb;
+    } else if(subjectType == toeicSubject){
+      _tempDb = _toeicDb;
+    }
     final maps = await requestApi<List<Map>, List<Map>>(
-      call: () => _toeicDb!.query(
+      call: () => _tempDb!.query(
         "$tableQuestion",
         where: '"parentId" = $parentId',
       ),
@@ -213,23 +222,5 @@ class SqfliteRepository {
     return result;
   }
 
-  Future<List<Question>> loadIeltsQuestionsByParentId(
-      {required String parentId}) async {
-    List<Question> result = [];
-    final maps = await requestApi<List<Map>, List<Map>>(
-      call: () => _ieltsDb!.query(
-        "$tableQuestion",
-        where: '"parentId" = $parentId',
-      ),
-      defaultValue: [],
-    );
 
-    if (maps.length > 0) {
-      for (var item in maps) {
-        Question question = Question.fromJson(item as Map<String, dynamic>);
-        result.add(question);
-      }
-    }
-    return result;
-  }
 }

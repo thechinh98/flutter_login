@@ -7,8 +7,8 @@ import 'package:game/service/game_service.dart';
 class GameServiceImpl implements GameService {
   @override
   Future<List<Question>> loadQuestionsByParentId(
-      {required String parentId}) async {
-    return await SqfliteRepository().loadQuestionsByParentId(parentId: parentId);
+      {required String parentId, required int subjectType}) async {
+    return await SqfliteRepository().loadQuestionsByParentId(parentId: parentId, subjectType: subjectType);
   }
 
   @override
@@ -19,8 +19,8 @@ class GameServiceImpl implements GameService {
 
   @override
   Future<List<Question>> loadChildQuestionList(
-      Map<String, Question> mapHasChild) async {
-    return await SqfliteRepository().loadChildQuestionList(mapHasChild);
+      Map<String, Question> mapHasChild, int subjectType) async {
+    return await SqfliteRepository().loadChildQuestionList(mapHasChild, subjectType);
   }
 
   @override
@@ -29,8 +29,4 @@ class GameServiceImpl implements GameService {
         ROUTER_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
   }
 
-  @override
-  Future<List<Question>> loadIeltsQuestionsByParentId({required String parentId}) async {
-    return await SqfliteRepository().loadIeltsQuestionsByParentId(parentId: parentId);
-  }
 }

@@ -49,6 +49,7 @@ class Question {
         break;
       case TYPE_CARD_PARAGRAPH:
         hasChild = true;
+        // getNormalQuestion(map);
         break;
       case TYPE_CARD_PARAGRAPH_CHILD:
         isChildQues = true;
@@ -63,7 +64,7 @@ class Question {
     parentId = map[columnParentId]?.toString() ?? "-1";
     content = map[columnContent] ?? "";
     choices = [];
-    type = map[columnType] ?? TYPE_CARD_NORMAL;
+    type = map[columnType] ??   TYPE_CARD_NORMAL;
     image = map[columnImage] ?? "";
     sound = ClientUtils.checkUrl(map[columnSound]) ?? "";
     backSound = ClientUtils.checkUrl(map[columnBackSound]) ?? "";
@@ -119,6 +120,7 @@ class Question {
       columnExplain: explain,
       columnSkill: skill,
       columnSound: sound,
+      columnBackSound: backSound,
       columnType: type,
       columnHint: hint,
     };

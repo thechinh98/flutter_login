@@ -78,7 +78,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => GameScreen(
                                       topicId: _topicModel.topics[index].id!,
-                                      gameType: GAME_TEST_MODE,
+                                      gameType: GAME_STUDY_MODE,
                                       subjectType: subjectType,
                                     ),
                                   ),

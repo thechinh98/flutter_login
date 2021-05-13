@@ -1,17 +1,19 @@
 import 'package:game/model/game/flash_game_object.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/matching_game_object.dart';
+import 'package:game/model/game/para_game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/model/game/spelling_game_object.dart';
 
 import 'package:flutter/material.dart';
 import 'package:game/screen/game/game_view/flash_card/flash_card_view.dart';
 import 'package:game/screen/game/game_view/matching/matching_view.dart';
+import 'package:game/screen/game/game_view/paragraph/paragraph_view.dart';
 import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/game/game_view/spelling/spelling_view.dart';
 
-
 import '../../game_screen.dart';
+
 typedef OnAnswer<T>(AnswerType type, [T? params]);
 
 class GameItemView extends StatelessWidget {
@@ -19,7 +21,12 @@ class GameItemView extends StatelessWidget {
   final OnAnswer? onAnswer;
   final int gameType;
 
-  GameItemView({Key? key, required this.gameObject, this.onAnswer,required this.gameType}) : super(key: key);
+  GameItemView(
+      {Key? key,
+      required this.gameObject,
+      this.onAnswer,
+      required this.gameType})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +46,14 @@ class GameItemView extends StatelessWidget {
         onAnswer: onAnswer!,
         gameObject: gameObject as SpellingGameObject,
       );
-    }  else if (gameObject is MatchingGameObject) {
+    } else if (gameObject is MatchingGameObject) {
       return MatchingView(
         onAnswer: onAnswer!,
         gameObject: gameObject as MatchingGameObject,
+      );
+    } else if (gameObject is ParaGameObject) {
+      return ParagraphView(
+        gameObject: gameObject as ParaGameObject,
       );
     } else {
       return Center(

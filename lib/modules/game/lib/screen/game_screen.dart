@@ -1,3 +1,4 @@
+import 'package:database/constant.dart';
 import 'package:game/components/new_sound_data.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/flash_game_object.dart';
@@ -26,7 +27,10 @@ class GameScreen extends StatefulWidget {
   final String topicId;
   final int gameType;
   final int subjectType;
-  GameScreen({required this.topicId, required this.gameType, required this.subjectType});
+  GameScreen(
+      {required this.topicId,
+      required this.gameType,
+      required this.subjectType});
 
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -49,18 +53,18 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void initState() {
     if (gameType == GAME_STUDY_MODE) {
       print("CHINHLT: GAME_SCREEN: Init state STUDY MODE");
-      screenLogic = StudyLogic(context: context, topicId: topicId);
+      screenLogic = StudyLogic(
+          context: context, topicId: topicId, subjectType: subjectType);
       gameModel = context.read<StudyGameModel>();
     } else if (gameType == GAME_TEST_MODE) {
       print("CHINHLT: GAME_SCREEN: Init state TEST MODE");
-      screenLogic = TestLogic(context: context, topicId: topicId, subjectType: subjectType);
+      screenLogic = TestLogic(
+          context: context, topicId: topicId, subjectType: subjectType);
       gameModel = context.read<TestGameModel>();
     }
-
-    gameModel.addListener(listener);
-
     screenLogic.loadData();
 
+    gameModel.addListener(listener);
     //init animation
     _controller = AnimationController(
       vsync: this,
@@ -82,15 +86,19 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         List<NewSoundData> _sounds = [];
         gameModel.listGames!.forEach((element) {
           _sounds.add(NewSoundData.fromGameObject(
-              questionId: element.id, sound: element.question.sound));
+              questionId: element.id, sound: element.question.sound, orderIndex: element.orderIndex));
+          // add 0.5 to distinguish sound vs back sound
+          _sounds.add(NewSoundData.fromGameObject(
+              questionId: element.id, sound: element.backSound, orderIndex: (element.orderIndex! + 0.05)));
 
-          if (element is QuizGameObject && element.parent != null) {
+          if (element is QuizGameObject && element.parent != null && element.parent!.question.sound != "") {
             _sounds.add(NewSoundData.fromGameObject(
                 questionId: element.parent!.id,
-                sound: element.parent!.question.sound));
+                sound: element.parent!.question.sound, orderIndex: element.parent!.orderIndex));
           }
         });
-        await audioModel.loadData(_sounds);
+
+        await audioModel.loadData(_sounds,subjectType == ieltsSubject);
         setState(() {
           isSoundDataLoaded = true;
         });
@@ -141,7 +149,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
                   GameObject? previousGame = gameModel.previousGame;
                   gameModel.previousGame = gameModel.currentGames;
-
                   return Column(
                     children: <Widget>[
                       Expanded(
@@ -249,8 +256,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     return Container(
       child: MaterialButton(
         onPressed: () {
-          QuizAnswerParams params = QuizAnswerParams(type: QuizAnswerType.continue_click,);
-          if(screenLogic.onAnswer != null){
+          QuizAnswerParams params = QuizAnswerParams(
+            type: QuizAnswerType.continue_click,
+          );
+          if (screenLogic.onAnswer != null) {
             screenLogic.onAnswer(AnswerType.quiz, params);
           }
           screenLogic.onContinue();

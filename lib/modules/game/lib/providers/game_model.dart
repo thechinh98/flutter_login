@@ -10,6 +10,7 @@ enum GameType {
   FLASH_CARD,
   SPELLING,
   MATCHING,
+  PARAGRAPH,
 }
 
 class GameModel extends ChangeNotifier {

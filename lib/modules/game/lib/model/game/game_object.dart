@@ -9,13 +9,13 @@ class GameObject {
   late Face question;
   Face? explain;   // used in flash game
   late Face hint;
+  String? backSound;
   GameObjectStatus gameObjectStatus = GameObjectStatus.waiting;
   QuestionStatus questionStatus = QuestionStatus.notAnswerYet;
   double? orderIndex;
   int? skill;
 
   // GameObject();
-
   GameObject.fromQuestion(Question questionDb) {
     id = questionDb.id;
     question = Face.fromQuestion(questionDb);
@@ -25,6 +25,7 @@ class GameObject {
     if (questionDb.hint != null && questionDb.hint!.isNotEmpty) {
       hint = Face(content: questionDb.hint);
     }
+    backSound = questionDb.backSound;
     skill = questionDb.skill;
     orderIndex = questionDb.orderIndex;
   }

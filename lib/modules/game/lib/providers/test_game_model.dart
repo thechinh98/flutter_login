@@ -39,16 +39,18 @@ class TestGameModel extends GameModel implements GamePlay {
     List<Question> childQuestions = [];
     if (mapQuestionHasChild.isNotEmpty) {
       childQuestions =
-          await gameService.loadChildQuestionList(mapQuestionHasChild);
+          await gameService.loadChildQuestionList(mapQuestionHasChild, subjectType);
       childQuestions.forEach((element) {
-        if (element.choices!.isNotEmpty) {
+        if (element.choices!.isNotEmpty || element.skill == -400) {
           Question? parentQuestion = mapQuestionHasChild[element.parentId!];
           if (parentQuestion != null) {
             element.parentQues = parentQuestion;
             element.sound = parentQuestion.sound;
           }
           questions.add(element);
-        } else {}
+        } else {
+
+        }
       });
     }
     generateGame(questions);

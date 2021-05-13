@@ -31,7 +31,7 @@ class NewSoundData {
           .first;
 
   NewSoundData.fromGameObject(
-      {required String? questionId, required String? sound, bool? isLocal}) {
+      {required String? questionId, required String? sound, bool? isLocal, required double? orderIndex}) {
     this.questionId = questionId;
     if (sound == null) {
       return;
@@ -48,6 +48,7 @@ class NewSoundData {
     if (isLocal != null && isLocal) {
       this.isLocal = isLocal;
     }
+    this.orderIndex = orderIndex!;
   }
 
   updateDuration(Duration _duration) {

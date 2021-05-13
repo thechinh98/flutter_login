@@ -46,7 +46,6 @@ class AudioModel extends ChangeNotifier {
     _positionSubscription = audioPlayer.onAudioPositionChanged.listen((p) {
       if (currentSound != null &&
           currentSound!.playerState == AudioPlayerState.PLAYING) {
-        // print("SET POSITION:");
         currentSound!.updatePosition(p);
         notifyListeners();
       }
@@ -54,58 +53,58 @@ class AudioModel extends ChangeNotifier {
 
     _playerCompleteSubscription =
         audioPlayer.onPlayerCompletion.listen((event) {
-          if (currentSound != null && currentSound!.playerState == AudioPlayerState.PLAYING) {
-            // print("SET COMPLETE:");
-            currentSound!.complete();
+      if (currentSound != null &&
+          currentSound!.playerState == AudioPlayerState.PLAYING) {
+        // print("SET COMPLETE:");
+        currentSound!.complete();
 
-            if (isPlaylistMode) {
-              NewSoundData? nextSound = sounds.firstWhereOrNull(
-                      (element) => element.orderIndex > currentSound!.orderIndex);
-              if (nextSound != null) {
-                play(nextSound);
-              } else {
-                sounds.forEach((element) {
-                  element.reset();
-                });
-                currentSound = sounds.first;
-                notifyListeners();
-              }
-            } else if (isSpeakingPracticeMode) {
-              // Mode for User Speaking
-              print("SET COMPLETE: isSpeakingPracticeMode");
-              speakingPracticeSounds.forEach((element) {
-                print(": ${element.questionId} ====== ${element.sound}");
-              });
-              NewSoundData? nextSound = speakingPracticeSounds.firstWhereOrNull(
-                      (element) => (element.orderIndex > currentSound!.orderIndex));
-              if (nextSound != null) {
-                print("${nextSound.sound}");
-                if (nextSound.isHintSound) {
-                  //call back to speaking
-                  print("SET COMPLETE: call back to speaking");
-
-                  callBackToSpeakingPractice = true;
-                  notifyListeners();
-                  callBackToSpeakingPractice = false;
-                } else {
-                  print("Play nextSound ");
-
-                  play(nextSound);
-                }
-              } else {
-                print("Reset");
-
-                speakingPracticeSounds.forEach((element) {
-                  element.reset();
-                });
-                // currentSound = sounds.first;
-                notifyListeners();
-              }
-            } else {
-              notifyListeners();
-            }
+        if (isPlaylistMode) {
+          print("SET COMPLETE: isPlaylistMode");
+          NewSoundData? nextSound = sounds.firstWhereOrNull(
+              (element) => element.orderIndex > currentSound!.orderIndex);
+          if (nextSound != null) {
+            play(nextSound);
+          } else {
+            sounds.forEach((element) {
+              element.reset();
+            });
+            currentSound = sounds.first;
+            notifyListeners();
           }
-        });
+        } else if (isSpeakingPracticeMode) {
+          // Mode for User Speaking
+          print("SET COMPLETE: isSpeakingPracticeMode");
+          speakingPracticeSounds.forEach((element) {
+            print(": ${element.questionId} ====== ${element.sound} : ${element.orderIndex}");
+          });
+          NewSoundData? nextSound = speakingPracticeSounds.firstWhereOrNull(
+              (element) => (element.orderIndex > currentSound!.orderIndex));
+          if (nextSound != null) {
+            print("${nextSound.sound}");
+            if (nextSound.isHintSound) {
+              //call back to speaking
+              print("SET COMPLETE: call back to speaking");
+
+              callBackToSpeakingPractice = true;
+              notifyListeners();
+              callBackToSpeakingPractice = false;
+            } else {
+              print("Play nextSound ");
+              play(nextSound);
+            }
+          } else {
+            print("Reset");
+            speakingPracticeSounds.forEach((element) {
+              element.reset();
+            });
+            // currentSound = sounds.first;
+            notifyListeners();
+          }
+        } else {
+          notifyListeners();
+        }
+      }
+    });
     _playerErrorSubscription = audioPlayer.onPlayerError.listen((msg) {
       print('audioPlayer error : $msg');
     });
@@ -130,6 +129,7 @@ class AudioModel extends ChangeNotifier {
   resetSpeakingPracticeMode() {
     isPlaylistMode = true;
     isSpeakingPracticeMode = false;
+    notifyListeners();
   }
 
   resetList() async {
@@ -138,12 +138,22 @@ class AudioModel extends ChangeNotifier {
     sounds.forEach((element) {
       element.reset();
     });
+    speakingPracticeSounds.forEach((element) {
+      element.reset();
+    });
   }
 
-  loadData(List<NewSoundData> _sounds) {
+   loadData(List<NewSoundData> _sounds, bool isSpeakingMode) {
     // sounds = [];
-    sounds = _sounds;
-    currentSound = sounds.first;
+    if (!isSpeakingMode) {
+      sounds = _sounds;
+      currentSound = sounds.first;
+    } else {
+      speakingPracticeSounds = _sounds;
+      currentSound = speakingPracticeSounds.first;
+      changeToSpeakingPracticeMode();
+    }
+
     // print(_sounds.length);
     notifyListeners();
   }
@@ -151,6 +161,7 @@ class AudioModel extends ChangeNotifier {
   changeToSpeakingPracticeMode() {
     isPlaylistMode = false;
     isSpeakingPracticeMode = true;
+    notifyListeners();
   }
 
   setSpeed(double _speed) async {
@@ -163,6 +174,7 @@ class AudioModel extends ChangeNotifier {
 
   reset() {
     sounds = [];
+    speakingPracticeSounds = [];
     currentSound = null;
     isLoading = false;
     isPlaylistMode = false;
@@ -219,7 +231,8 @@ class AudioModel extends ChangeNotifier {
     int result = await audioPlayer.resume();
   }
 
-  playInSpeakingPractice(List<NewSoundData> speakingSoundList, bool questionClicked) {
+  playInSpeakingPractice(
+      List<NewSoundData> speakingSoundList, bool questionClicked) {
     speakingPracticeSounds = speakingSoundList;
     if (questionClicked) {
       NewSoundData? questionSound = speakingPracticeSounds
@@ -229,5 +242,4 @@ class AudioModel extends ChangeNotifier {
       }
     }
   }
-
 }
