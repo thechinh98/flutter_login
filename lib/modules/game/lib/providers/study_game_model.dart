@@ -32,10 +32,12 @@ class StudyGameModel extends GameModel implements GamePlay {
 
     Map<String, Question> mapQuestionHasChild = {};
     // Map<String, ParaGameObject> mapGameObjectHasChild = {};
+    Question? paraQuestion;
     quesDb.forEach((element) {
       if (element.hasChild && element.skill != -400) {
         mapQuestionHasChild.putIfAbsent(element.id!, () => element);
         // mapGameObjectHasChild.putIfAbsent(element.id, () => ParaGameObject.fromQuestion(element));
+        paraQuestion = element;
       } else {
         questions.add(element);
       }
@@ -57,6 +59,9 @@ class StudyGameModel extends GameModel implements GamePlay {
           // SPELL GAME
         }
       });
+      if (subjectType == ieltsSubject) {
+        questions.add(paraQuestion!);
+      }
     }
 
     // generateGame(questions.sublist(0, 6), StudyType.practice, choicesNum: 4);
@@ -100,8 +105,9 @@ class StudyGameModel extends GameModel implements GamePlay {
             }
             break;
           case GameType.PARAGRAPH:
-            final paragraphGame = ParaGameObject.fromQuestion(question);
-            listGames!.add(paragraphGame);
+            final paraGame = ParaGameObject.fromQuestion(question);
+            listGames!.add(paraGame);
+            createParagraphGameWithId(question.id!);
             break;
           default:
             break;
@@ -110,23 +116,25 @@ class StudyGameModel extends GameModel implements GamePlay {
     }
   }
 
-  ParaGameObject createParagraphGameWithId(String paraGameId) {
-    ParaGameObject paraGameObject = listGames!
-        .firstWhere((element) => element.id == paraGameId) as ParaGameObject;
+  createParagraphGameWithId(String paraGameId) {
+    final paraGameObject = listGames!.firstWhere(
+      (element) => element.id == paraGameId,
+    ) as ParaGameObject;
     listGames!.forEach((element) {
       if (element is QuizGameObject) {
-        if(element.parent!.id == paraGameId){
+        if (element.parent!.id == paraGameId) {
           paraGameObject.children.add(element);
         }
       }
     });
-    return paraGameObject;
+    listGames!.removeWhere((element) => (element is QuizGameObject && element.parent!.id == paraGameId));
+    listGames!.add(paraGameObject);
   }
 
   GameType _getGameType(Question? question) {
     if (question!.skill == 0 && question.type == 0) {
       return GameType.FLASH_CARD;
-    } else if (question.skill == -400 && question.type == 1) {
+    } else if (question.skill == -400 || question.type == 1) {
       return GameType.PARAGRAPH;
     }
     return GameType.QUIZ;

@@ -5,21 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:game/components/text_content.dart';
 import 'package:game/model/core/choice.dart';
 import 'package:game/model/core/face.dart';
-import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
-import 'package:game/screen/game/game_view/game_item_view.dart';
-import 'package:game/utils/constant.dart';
 
 import '../../../game_screen.dart';
 
 class ParagraphView extends StatelessWidget {
-
   final ParaGameObject gameObject;
   final ScrollController _scrollController = ScrollController();
 
-  ParagraphView({required this.gameObject,});
+  ParagraphView({
+    required this.gameObject,
+  });
 
   void scrollToBottom() {
     _scrollController.animateTo(
@@ -36,47 +34,81 @@ class ParagraphView extends StatelessWidget {
       child: ListView(
         controller: _scrollController,
         children: <Widget>[
-          // _renderSound(),
-          _renderParagraph(),
-          _renderImage(),
-          _buildHint(),
+          _renderSound(),
+          _renderParagraph(gameObject),
+          _renderImage(gameObject),
+          _buildHint(gameObject),
+          gameObject.children.isNotEmpty ?_buildChildContent() : Container(),
         ],
       ),
     );
   }
 
-
-  Container _renderParagraph() {
+  Container _renderParagraph(GameObject tempGameObject) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: TextContent(
-        face: gameObject.question,
+        face: tempGameObject.question,
+        textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+  Container _renderAnswer(GameObject tempGameObject) {
+    Choice choice = (tempGameObject as QuizGameObject).choices[0];
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      child: TextContent(
+        face: Face(content: choice.content),
         textStyle: TextStyle(fontSize: 20),
       ),
     );
   }
 
-  Container _buildHint() {
+  Container _buildHint(GameObject tempGameObject) {
+    if(tempGameObject.hint != null) {
       return Container(
         width: double.infinity,
         child: Center(
           child: TextContent(
-            face: gameObject.hint,
+            face: tempGameObject.hint!,
             textStyle: TextStyle(fontSize: 20),
           ),
         ),
       );
+    }
+    return Container();
   }
 
-  Container _renderImage() {
-    if (gameObject.question.image != null) {
-      print(gameObject.question.image);
+  Widget _buildChildContent() {
+    return SizedBox(
+      height: 600,
+      child: ListView.builder(
+          itemCount: gameObject.children.length,
+          itemBuilder: (BuildContext context, int index) {
+            GameObject indexGameObject = gameObject.children[index];
+            return SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  _renderParagraph(indexGameObject),
+                  _renderAnswer(indexGameObject),
+                  // _buildHint(indexGameObject),
+                  // _renderImage(indexGameObject),
+                ],
+              ),
+            );
+          }),
+    );
+  }
+
+  Container _renderImage(GameObject tempGameObject) {
+    if (tempGameObject.question.image != null) {
       return Container(
         width: double.infinity,
         height: 200,
         margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         child: CachedNetworkImage(
-          imageUrl: gameObject.question.image!,
+          imageUrl: tempGameObject.question.image!,
           placeholder: (context, url) => new SizedBox(
             child: CircularProgressIndicator(),
             height: 10,
@@ -89,24 +121,22 @@ class ParagraphView extends StatelessWidget {
   }
 
   _renderSound() {
-    // if (gameObject.parent != null &&
-    //     gameObject.parent!.question.sound != null &&
-    //     gameObject.parent!.question.sound!.isNotEmpty) {
-    //   return NewGameSound(
-    //     disabled: onAnswer == null ? true : false,
-    //     questionId: gameObject.parent!.id!,
-    //     key: Key(gameObject.parent!.id.toString() + gameObject.id.toString()),
-    //   );
-    // } else if (gameObject.question.sound != null &&
-    //     gameObject.question.sound!.isNotEmpty) {
-    //   return NewGameSound(
-    //     disabled: onAnswer == null ? true : false,
-    //     questionId: gameObject.id!,
-    //     key: Key(gameObject.id.toString()),
-    //   );
-    // } else
-    //   return Container();
+    if (gameObject != null &&
+        gameObject.question.sound != null &&
+        gameObject.question.sound!.isNotEmpty) {
+      return NewGameSound(
+        disabled:  false,
+        questionId: gameObject.id!,
+        key: Key(gameObject.id.toString() + gameObject.id.toString()),
+      );
+    } else if (gameObject.children.isNotEmpty &&
+        gameObject.children[0].question.sound != null) {
+      return NewGameSound(
+        disabled: false,
+        questionId: gameObject.children[0].id!,
+        key: Key(gameObject.id.toString()),
+      );
+    } else
+      return Container();
   }
-
 }
-

@@ -3,6 +3,7 @@ import 'package:game/components/new_sound_data.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/flash_game_object.dart';
 import 'package:game/model/game/game_object.dart';
+import 'package:game/model/game/para_game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
 import 'package:game/providers/audio_model.dart';
 
@@ -78,6 +79,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   int firstRun = 0;
+  List<String> paragraphAdded = [];
   listener() async {
     audioModel = context.read<AudioModel>();
     if (gameModel.listGames!.isNotEmpty) {
@@ -85,20 +87,44 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         firstRun++;
         List<NewSoundData> _sounds = [];
         gameModel.listGames!.forEach((element) {
-          _sounds.add(NewSoundData.fromGameObject(
-              questionId: element.id, sound: element.question.sound, orderIndex: element.orderIndex));
-          // add 0.5 to distinguish sound vs back sound
-          _sounds.add(NewSoundData.fromGameObject(
-              questionId: element.id, sound: element.backSound, orderIndex: (element.orderIndex! + 0.05)));
-
-          if (element is QuizGameObject && element.parent != null && element.parent!.question.sound != "") {
+          if (element.question.sound != "") {
             _sounds.add(NewSoundData.fromGameObject(
-                questionId: element.parent!.id,
-                sound: element.parent!.question.sound, orderIndex: element.parent!.orderIndex));
+                questionId: element.id,
+                sound: element.question.sound,
+                orderIndex: element.orderIndex));
+            // add 0.5 to distinguish sound vs back sound
+            _sounds.add(NewSoundData.fromGameObject(
+                questionId: element.id,
+                sound: element.backSound,
+                orderIndex: (element.orderIndex! + 0.05)));
+
+            if (element is QuizGameObject &&
+                element.parent != null &&
+                element.parent!.question.sound != "") {
+              _sounds.add(NewSoundData.fromGameObject(
+                  questionId: element.parent!.id,
+                  sound: element.parent!.question.sound,
+                  orderIndex: element.parent!.orderIndex));
+            }
+          }
+          if (element is ParaGameObject && element.children.isNotEmpty && !paragraphAdded.contains(element.id)) {
+            paragraphAdded.add(element.id!);
+            element.children.forEach((element) {
+              if (element.question.sound != "") {
+                _sounds.add(NewSoundData.fromGameObject(
+                    questionId: element.id,
+                    sound: element.question.sound,
+                    orderIndex: element.orderIndex));
+                _sounds.add(NewSoundData.fromGameObject(
+                    questionId: element.id,
+                    sound: element.backSound,
+                    orderIndex: element.orderIndex! + 0.05));
+              }
+            });
           }
         });
 
-        await audioModel.loadData(_sounds,subjectType == ieltsSubject);
+        await audioModel.loadData(_sounds, subjectType == ieltsSubject);
         setState(() {
           isSoundDataLoaded = true;
         });

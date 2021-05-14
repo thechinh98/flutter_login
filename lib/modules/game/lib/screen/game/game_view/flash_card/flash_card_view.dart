@@ -85,7 +85,7 @@ class _FlashCardViewState extends State<FlashCardView> {
           ),
           Center(
             child: TextContent(
-              face: gameObject.hint,
+              face: gameObject.hint!,
               textStyle: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 40),
             ),
           ),

@@ -8,7 +8,7 @@ class GameObject {
   String? id;
   late Face question;
   Face? explain;   // used in flash game
-  late Face hint;
+  Face? hint;
   String? backSound;
   GameObjectStatus gameObjectStatus = GameObjectStatus.waiting;
   QuestionStatus questionStatus = QuestionStatus.notAnswerYet;

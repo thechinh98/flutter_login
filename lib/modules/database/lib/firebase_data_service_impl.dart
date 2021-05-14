@@ -31,7 +31,6 @@ class FirebaseServiceImpl implements DatabaseService {
       for (var item in maps) {
         Topic topic = Topic.fromJson(item);
         topics.add(topic);
-        print("Get topic from Json");
       }
     }
     return topics;

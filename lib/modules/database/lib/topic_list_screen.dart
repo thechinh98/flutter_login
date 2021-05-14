@@ -31,7 +31,6 @@ class _TopicListScreenState extends State<TopicListScreen> {
   String get parentId => widget.parentId;
   @override
   void initState() {
-    // TODO: implement initState
     print(
         "CHINHLT: Topic List Screen - init state: Topic mode: ${context.read<TopicModel>()}");
     topicModel = context.read<TopicModel>();
