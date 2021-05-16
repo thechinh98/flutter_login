@@ -158,7 +158,7 @@ class SqfliteRepository {
           parentOrderIndex = 0;
         }
         question.orderIndex =
-            parentOrderIndex + (parentOrderIndex + question.orderIndex!) / 10;
+            parentOrderIndex + (question.orderIndex!) / 10;
         // print(parentOrderIndex);
         results.add(question);
       });

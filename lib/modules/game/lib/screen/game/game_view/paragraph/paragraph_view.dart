@@ -8,17 +8,25 @@ import 'package:game/model/core/face.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/para_game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
+import 'package:game/providers/audio_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../game_screen.dart';
 
-class ParagraphView extends StatelessWidget {
+class ParagraphView extends StatefulWidget {
   final ParaGameObject gameObject;
-  final ScrollController _scrollController = ScrollController();
 
   ParagraphView({
     required this.gameObject,
   });
 
+  @override
+  _ParagraphViewState createState() => _ParagraphViewState();
+}
+
+class _ParagraphViewState extends State<ParagraphView> {
+  final ScrollController _scrollController = ScrollController();
+  late AudioModel audioModel;
   void scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -28,24 +36,41 @@ class ParagraphView extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    audioModel = context.read<AudioModel>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: ListView(
-        controller: _scrollController,
-        children: <Widget>[
-          _renderSound(),
-          _renderParagraph(gameObject),
-          _renderImage(gameObject),
-          _buildHint(gameObject),
-          gameObject.children.isNotEmpty ?_buildChildContent() : Container(),
-        ],
-      ),
-    );
+    return Consumer(builder: (_, AudioModel audioModel, __) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: ListView(
+          controller: _scrollController,
+          children: <Widget>[
+            _renderSound(),
+            _renderParagraph(widget.gameObject),
+            _renderImage(widget.gameObject),
+            _buildHint(widget.gameObject),
+            widget.gameObject.children.isNotEmpty
+                ? _buildChildContent()
+                : Container(),
+          ],
+        ),
+      );
+    });
   }
 
   Container _renderParagraph(GameObject tempGameObject) {
     return Container(
+      decoration: BoxDecoration(
+          color:
+              // set highlight base on orderIndex
+              audioModel.currentSound!.orderIndex == tempGameObject.orderIndex && tempGameObject.question.sound != ""
+                  ? Colors.amberAccent
+                  : Colors.white),
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: TextContent(
         face: tempGameObject.question,
@@ -53,9 +78,16 @@ class ParagraphView extends StatelessWidget {
       ),
     );
   }
+
   Container _renderAnswer(GameObject tempGameObject) {
     Choice choice = (tempGameObject as QuizGameObject).choices[0];
     return Container(
+      decoration: BoxDecoration(
+          color:
+          // set highlight base on orderIndex
+          audioModel.currentSound!.orderIndex == tempGameObject.orderIndex! + 0.05
+              ? Colors.amberAccent
+              : Colors.white),
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: TextContent(
         face: Face(content: choice.content),
@@ -65,7 +97,7 @@ class ParagraphView extends StatelessWidget {
   }
 
   Container _buildHint(GameObject tempGameObject) {
-    if(tempGameObject.hint != null) {
+    if (tempGameObject.hint != null) {
       return Container(
         width: double.infinity,
         child: Center(
@@ -83,9 +115,9 @@ class ParagraphView extends StatelessWidget {
     return SizedBox(
       height: 600,
       child: ListView.builder(
-          itemCount: gameObject.children.length,
+          itemCount: widget.gameObject.children.length,
           itemBuilder: (BuildContext context, int index) {
-            GameObject indexGameObject = gameObject.children[index];
+            GameObject indexGameObject = widget.gameObject.children[index];
             return SizedBox(
               width: double.infinity,
               child: Column(
@@ -121,20 +153,20 @@ class ParagraphView extends StatelessWidget {
   }
 
   _renderSound() {
-    if (gameObject != null &&
-        gameObject.question.sound != null &&
-        gameObject.question.sound!.isNotEmpty) {
-      return NewGameSound(
-        disabled:  false,
-        questionId: gameObject.id!,
-        key: Key(gameObject.id.toString() + gameObject.id.toString()),
-      );
-    } else if (gameObject.children.isNotEmpty &&
-        gameObject.children[0].question.sound != null) {
+    if (widget.gameObject.question.sound != null &&
+        widget.gameObject.question.sound!.isNotEmpty) {
       return NewGameSound(
         disabled: false,
-        questionId: gameObject.children[0].id!,
-        key: Key(gameObject.id.toString()),
+        questionId: widget.gameObject.id!,
+        key: Key(
+            widget.gameObject.id.toString() + widget.gameObject.id.toString()),
+      );
+    } else if (widget.gameObject.children.isNotEmpty &&
+        widget.gameObject.children[0].question.sound != null) {
+      return NewGameSound(
+        disabled: false,
+        questionId: widget.gameObject.children[0].id!,
+        key: Key(widget.gameObject.id.toString()),
       );
     } else
       return Container();

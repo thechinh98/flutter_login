@@ -91,6 +91,8 @@ class AudioModel extends ChangeNotifier {
             } else {
               print("Play nextSound ");
               play(nextSound);
+              currentSound = nextSound;
+              notifyListeners();
             }
           } else {
             print("Reset");
