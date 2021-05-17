@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:game/components/new_my_sound.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ class _ParagraphViewState extends State<ParagraphView> {
           controller: _scrollController,
           children: <Widget>[
             _renderSound(),
+            _buildSoundController(),
             _renderParagraph(widget.gameObject),
             _renderImage(widget.gameObject),
             _buildHint(widget.gameObject),
@@ -68,7 +70,9 @@ class _ParagraphViewState extends State<ParagraphView> {
       decoration: BoxDecoration(
           color:
               // set highlight base on orderIndex
-              audioModel.currentSound!.orderIndex == tempGameObject.orderIndex && tempGameObject.question.sound != ""
+              audioModel.currentSound!.orderIndex ==
+                          tempGameObject.orderIndex &&
+                      tempGameObject.question.sound != ""
                   ? Colors.amberAccent
                   : Colors.white),
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
@@ -84,15 +88,111 @@ class _ParagraphViewState extends State<ParagraphView> {
     return Container(
       decoration: BoxDecoration(
           color:
-          // set highlight base on orderIndex
-          audioModel.currentSound!.orderIndex == tempGameObject.orderIndex! + 0.05
-              ? Colors.amberAccent
-              : Colors.white),
+              // set highlight base on orderIndex
+              audioModel.currentSound!.orderIndex ==
+                      tempGameObject.orderIndex! + 0.05
+                  ? Colors.amberAccent
+                  : Colors.white),
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: TextContent(
         face: Face(content: choice.content),
         textStyle: TextStyle(fontSize: 20),
       ),
+    );
+  }
+
+  Row _buildSoundController() {
+    double speed = 0;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TextButton(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.hovered))
+                  return Colors.blue.withOpacity(0.04);
+                if (states.contains(MaterialState.focused) ||
+                    states.contains(MaterialState.pressed))
+                  return Colors.blue.withOpacity(0.12);
+                return Colors.white; // Defer to the widget's default.
+              },
+            ),
+          ),
+          onPressed: () {
+            if(speed == 0.25){
+              return;
+            } else {
+              speed = 0.25;
+              audioModel.setSpeed(speed);
+            }
+          },
+          child: Text("0.25x"),
+        ),
+        TextButton(
+          onPressed: () {
+            if(speed == 0.5){
+              return;
+            } else {
+              speed = 0.5;
+              audioModel.setSpeed(speed);
+            }
+          },
+          child: Text("0.5x"),
+        ),
+        InkWell(
+          onTap: audioModel.audioPlayer.state == AudioPlayerState.PLAYING
+              ? () {
+                  if (mounted) {
+                    audioModel.pause();
+                  }
+                }
+              : () {
+                  if (mounted) {
+                    if (audioModel.isPlaylistMode) {
+                      // _soundModel.playList();
+                    } else {
+                      speed = 1;
+                      audioModel.setSpeed(speed);
+                      audioModel.play(audioModel.currentSound);
+                    }
+                  }
+                },
+          child: Container(
+            width: 30,
+            height: 30,
+            // color: Colors.red,
+            child: Center(
+              child: audioModel.audioPlayer.state == AudioPlayerState.PLAYING
+                  ? Icon(Icons.pause, color: Color(0xffBF710F))
+                  : Icon(Icons.play_arrow, color: Color(0xffBF710F)),
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            if(speed == 2){
+              return;
+            } else {
+              speed = 2;
+              audioModel.setSpeed(speed);
+            }
+          },
+          child: Text("2x"),
+        ),
+        TextButton(
+          onPressed: () {
+            if(speed == 4){
+              return;
+            } else {
+              speed = 4;
+              audioModel.setSpeed(speed);
+            }
+          },
+          child: Text("4x"),
+        ),
+      ],
     );
   }
 
