@@ -27,53 +27,62 @@ class SqfliteRepository {
   static const DB_VERSION = 1;
   Database? _toeicDb;
   Database? _ieltsDb;
-  String appDbName = 'data-$DB_VERSION.db';
-  String dataDbName = 'data.db';
+  Database? _userDb;
+  String toeicAppDbName = 'toeic-$DB_VERSION.db';
+  String toeicDbName = 'toeic.db';
+
+  String userAppDbName = 'user_data-$DB_VERSION.db';
   String userDbName = 'user_data.db';
 
   String ieltsAppDbName = 'ielts-$DB_VERSION.db';
   String ieltsDataDbName = 'ielts.db';
   String userIeltsDbName = 'user_ielts_data.db';
-  Database get moduleDB => _toeicDb!;
+  Database get toeicDb => _toeicDb!;
   Database get ieltsDB => _ieltsDb!;
+  Database get userDataDb => _userDb!;
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await _checkAndCopyDatabase();
+    await _checkAndCopyToeicDatabase();
     await _checkAndCopyIeltsDatabase();
+    await -_checkAndCopyUserDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, appDbName);
+    String path = join(documentsDirectory.path, toeicAppDbName);
     String pathIelts = join(documentsDirectory.path, ieltsAppDbName);
+    String pathUser = join(documentsDirectory.path, userAppDbName);
+
     _toeicDb = await openDatabase(path);
     _ieltsDb = await openDatabase(pathIelts);
+    _userDb = await openDatabase(pathUser);
     await _createTable(_toeicDb);
     await _createTable(_ieltsDb);
+    await _createTable(_userDb);
   }
 
-  _checkAndCopyDatabase() async {
+  _checkAndCopyToeicDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = documentsDirectory.listSync();
     for (var file in files) {
       String fileName = file.path.split('/').last;
       if (fileName.endsWith('.db') &&
-          fileName.startsWith('data') &&
-          !fileName.startsWith('data-$DB_VERSION.db')) {
+          fileName.startsWith('toeic') &&
+          !fileName.startsWith('toeic-$DB_VERSION.db')) {
         file.deleteSync(recursive: true);
       }
     }
-    String path = join(documentsDirectory.path, appDbName);
+    String path = join(documentsDirectory.path, toeicAppDbName);
     print("path: $path");
     // Only copy if the database doesn't exist
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
       // Load database from asset and copy
       print(
-          "dbName not found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
+          "dbName not found $toeicAppDbName documentsDirectory.path: ${documentsDirectory.path}");
       ByteData data;
       try {
         data = await rootBundle
-            .load(join('packages/game/assets/data/', dataDbName));
+            .load(join('packages/game/assets/data/', toeicDbName));
       } catch (e) {
-        data = await rootBundle.load(join('assets/data/', dataDbName));
+        data = await rootBundle.load(join('assets/data/', toeicDbName));
       }
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
@@ -81,10 +90,43 @@ class SqfliteRepository {
       await new File(path).writeAsBytes(bytes);
     } else {
       print(
-          "dbName found $appDbName documentsDirectory.path: ${documentsDirectory.path}");
+          "dbName found $toeicAppDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
-
+  _checkAndCopyUserDatabase() async{
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    List<FileSystemEntity> files = documentsDirectory.listSync();
+    for (var file in files) {
+      String fileName = file.path.split('/').last;
+      if (fileName.endsWith('.db') &&
+          fileName.startsWith('user_data') &&
+          !fileName.startsWith('user_data-$DB_VERSION.db')) {
+        file.deleteSync(recursive: true);
+      }
+    }
+    String path = join(documentsDirectory.path, toeicAppDbName);
+    print("path: $path");
+    // Only copy if the database doesn't exist
+    if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
+      // Load database from asset and copy
+      print(
+          "dbName not found $userAppDbName documentsDirectory.path: ${documentsDirectory.path}");
+      ByteData data;
+      try {
+        data = await rootBundle
+            .load(join('packages/game/assets/data/', userDbName));
+      } catch (e) {
+        data = await rootBundle.load(join('assets/data/', userDbName));
+      }
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // Save copied asset to documents
+      await new File(path).writeAsBytes(bytes);
+    } else {
+      print(
+          "dbName found $userDbName documentsDirectory.path: ${documentsDirectory.path}");
+    }
+  }
   _checkAndCopyIeltsDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = documentsDirectory.listSync();
