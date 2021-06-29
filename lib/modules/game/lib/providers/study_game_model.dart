@@ -80,7 +80,6 @@ class StudyGameModel extends GameModel implements GamePlay {
       while (iterator.moveNext()) {
         final question = iterator.current;
 
-        // TODO set game type
         final gameType = _getGameType(question);
         switch (gameType) {
           case GameType.QUIZ:
@@ -132,7 +131,7 @@ class StudyGameModel extends GameModel implements GamePlay {
   }
 
   GameType _getGameType(Question? question) {
-    if (question!.skill == 0 && question.type == 0) {
+    if (question!.skill == 0 && question.type == 0 || question.skill == -100 && question.type == -1) {
       return GameType.FLASH_CARD;
     } else if (question.skill == -400 || question.type == 1) {
       return GameType.PARAGRAPH;
@@ -181,10 +180,13 @@ class StudyGameModel extends GameModel implements GamePlay {
     listGames!.add(quiz);
   }
 
-  onAnswer<T>(AnswerType type, T params) async {
+  onAnswer<T>(AnswerType type,{T? params}) async {
     switch (type) {
       case AnswerType.quiz:
         (currentGames as QuizGameObject).onAnswer(params as QuizAnswerParams);
+        break;
+      case AnswerType.flash:
+        (currentGames as FlashGameObject).onAnswer();
         break;
       default:
         break;

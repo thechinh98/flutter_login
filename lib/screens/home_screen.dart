@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
+import 'package:flutter_login/utils/constant.dart';
 import 'package:game/screen/game_screen.dart';
 import 'package:game/utils/constant.dart';
 import 'package:provider/provider.dart';
@@ -49,17 +50,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        RoundedButton(title: "PRACTICE", press: () {
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE, subjectType: toeicSubject,)));
-                        }),
+                        Text("TOEIC", style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            children: [
+                              RoundedButton(title: "PRACTICE", press: () {
+                                _buttonPress();
+                              }),
+                              SizedBox(height: 30,),
+                              RoundedButton(title: "TEST", press: () {
+                                Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOIEC Test", subjectType: toeicSubject, type: 3, parentId: "",)));
+                              }, color: Colors.lightGreenAccent,),
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 30,),
-                        RoundedButton(title: "TEST", press: () {
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOIEC Test", subjectType: toeicSubject, type: 3, parentId: "",)));
-                        }, color: Colors.lightGreenAccent,),
-                        SizedBox(height: 30,),
-                        RoundedButton(title: "IELTS", press: () {
-                          Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "IELTS",subjectType: ieltsSubject, type: 1,parentId: "",)));
-                        }, color: Colors.red,),
+                        Text("IELTS", style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                        SizedBox(height: 10,),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: RoundedButton(title: "PRACTICE", press: () {
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "IELTS",subjectType: ieltsSubject, type: 1,parentId: "",)));
+                          }, color: Colors.red,),
+                        ),
                         SizedBox(height: 60,),
                         TextButton(
                           child: Text(
@@ -86,6 +117,31 @@ class _HomeScreenState extends State<HomeScreen> {
     LoginModel _loginModel = Provider.of<LoginModel>(context, listen: false);
     _loginModel.logOut();
     NavigationService().pushReplacementNamed(ROUTER_LOGIN);
+  }
+  void _buttonPress() {
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: MediaQuery.of(context).copyWith().size.height * 0.25,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                RoundedButton(title: "READING", press: () {
+                  // Navigator.push(context,MaterialPageRoute(builder: (context) => GameScreen(topicId: testTopicId, gameType: GAME_STUDY_MODE, subjectType: toeicSubject,)));
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOEIC READING",subjectType: toeicSubject, type: 2,parentId: TOEIC_READING_PARENT_ID,)));
+                }, color: Colors.blue,),
+                SizedBox(height: 30,),
+                RoundedButton(title: "LISTENING", press: () {
+                  Navigator.push(context,MaterialPageRoute(builder: (context) => TopicListScreen(title: "TOEIC Listening",subjectType: toeicSubject, type: 2,parentId: TOEIC_LISTENING_PARENT_ID,)));
+
+                }, color: Colors.blue,),
+              ],
+            ),
+          );
+        });
   }
 }
 
@@ -121,3 +177,5 @@ class RoundedButton extends StatelessWidget {
     );
   }
 }
+
+

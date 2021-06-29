@@ -20,7 +20,7 @@ class FirebaseServiceImpl implements DatabaseService {
     }
     List<Topic> topics = [];
     String conditionString = '';
-    if(subjectType == ieltsSubject && type == 2 && parentId != ""){
+    if(type == 2 && parentId != ""){
      conditionString = 'type = $type AND parentId = $parentId';
      print("DATABASE: Get IELTS TOPIC");
     } else {

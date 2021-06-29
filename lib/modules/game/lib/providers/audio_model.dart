@@ -75,7 +75,8 @@ class AudioModel extends ChangeNotifier {
           // Mode for User Speaking
           print("SET COMPLETE: isSpeakingPracticeMode");
           speakingPracticeSounds.forEach((element) {
-            print(": ${element.questionId} ====== ${element.sound} : ${element.orderIndex}");
+            print(
+                ": ${element.questionId} ====== ${element.sound} : ${element.orderIndex}");
           });
           NewSoundData? nextSound = speakingPracticeSounds.firstWhereOrNull(
               (element) => (element.orderIndex > currentSound!.orderIndex));
@@ -145,17 +146,18 @@ class AudioModel extends ChangeNotifier {
     });
   }
 
-   loadData(List<NewSoundData> _sounds, bool isSpeakingMode) {
+  loadData(List<NewSoundData> _sounds, bool isSpeakingMode) {
     // sounds = [];
-    if (!isSpeakingMode) {
-      sounds = _sounds;
-      currentSound = sounds.first;
-    } else {
-      speakingPracticeSounds = _sounds;
-      currentSound = speakingPracticeSounds.first;
-      changeToSpeakingPracticeMode();
+    if (_sounds.isNotEmpty) {
+      if (!isSpeakingMode) {
+        sounds = _sounds;
+        currentSound = sounds.first;
+      } else {
+        speakingPracticeSounds = _sounds;
+        currentSound = speakingPracticeSounds.first;
+        changeToSpeakingPracticeMode();
+      }
     }
-
     // print(_sounds.length);
     notifyListeners();
   }

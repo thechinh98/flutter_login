@@ -71,7 +71,18 @@ class _TopicListScreenState extends State<TopicListScreen> {
                                     ),
                                   ),
                                 );
-                              } else {
+                              }else if(subjectType == toeicSubject && type == 3){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GameScreen(
+                                      topicId: _topicModel.topics[index].id!,
+                                      gameType: GAME_TEST_MODE,
+                                      subjectType: subjectType,
+                                    ),
+                                  ),
+                                );
+                             } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

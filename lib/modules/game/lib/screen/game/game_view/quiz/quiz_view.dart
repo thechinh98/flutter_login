@@ -8,7 +8,9 @@ import 'package:game/model/core/face.dart';
 import 'package:game/model/database_model/question_database.dart';
 import 'package:game/model/game/game_object.dart';
 import 'package:game/model/game/quiz_game_object.dart';
+import 'package:game/providers/study_game_model.dart';
 import 'package:game/screen/game/game_view/game_item_view.dart';
+import 'package:game/screen/study_logic/study_logic.dart';
 import 'package:game/utils/constant.dart';
 
 import '../../../game_screen.dart';

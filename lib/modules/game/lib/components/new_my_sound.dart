@@ -59,7 +59,6 @@ class _NewGameSoundState extends State<NewGameSound> {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer(builder: (_, AudioModel _soundModel, ___) {
       NewSoundData? soundData = _soundModel.sounds.firstWhereOrNull(
           (element) => element.questionId == widget.questionId);

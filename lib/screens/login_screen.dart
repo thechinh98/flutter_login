@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isNotEmpty = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -41,16 +42,26 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               padding: EdgeInsets.all(10),
               child: TextField(
+                onChanged: (text){
+                  setState(() {
+                    availableLogin();
+                  });
+                },
                 controller: nameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'User Name',
+                  labelText: 'Username',
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child: TextField(
+                onChanged: (text){
+                  setState(() {
+                    availableLogin();
+                  });
+                },
                 obscureText: true,
                 controller: passwordController,
                 decoration: InputDecoration(
@@ -63,15 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               height: 50,
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: RaisedButton(
-                textColor: Colors.white,
-                color: Colors.blue,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:Colors.blue, textStyle: TextStyle(color: Colors.white)),
                 child: Text('Login'),
-                onPressed: () {
+                onPressed: _isNotEmpty ? () {
                   String email = nameController.text;
                   String password = passwordController.text;
                   logInSuccess(email, password);
-                },
+                } : null,
               ),
             ),
           ],
@@ -86,6 +97,14 @@ class _LoginScreenState extends State<LoginScreen> {
     Provider.of<LoginModel>(context, listen: false);
     _loginModel.loginSuccess(userId, password);
     NavigationService().pushReplacementNamed(ROUTER_HOME);
+  }
+  void availableLogin() {
+    if (nameController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty) {
+      _isNotEmpty = true;
+    } else {
+      _isNotEmpty =  false;
+    }
   }
 
   @override

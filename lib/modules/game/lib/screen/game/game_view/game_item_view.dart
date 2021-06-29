@@ -20,12 +20,12 @@ class GameItemView extends StatelessWidget {
   final GameObject gameObject;
   final OnAnswer? onAnswer;
   final int gameType;
-
+  final int? gameSkill;
   GameItemView(
       {Key? key,
       required this.gameObject,
       this.onAnswer,
-      required this.gameType})
+      required this.gameType, this.gameSkill})
       : super(key: key);
 
   @override
@@ -54,6 +54,7 @@ class GameItemView extends StatelessWidget {
     } else if (gameObject is ParaGameObject) {
       return ParagraphView(
         gameObject: gameObject as ParaGameObject,
+        gameSkill: gameSkill!,
       );
     } else {
       return Center(

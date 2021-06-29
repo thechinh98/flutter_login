@@ -30,6 +30,8 @@ class _ResultScreenState extends State<ResultScreen> {
           builder: (_, ScoreModel scoreModel, __){
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("CORRECT READING ANSWER: ${scoreModel.readingCorrect}"),
                   Text("CORRECT LISTENING ANSWER: ${scoreModel.listeningCorrect}"),

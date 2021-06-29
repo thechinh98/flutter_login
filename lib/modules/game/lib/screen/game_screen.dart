@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:database/constant.dart';
 import 'package:game/components/new_sound_data.dart';
 import 'package:game/model/database_model/question_database.dart';
@@ -15,9 +17,9 @@ import 'package:game/route/routes.dart';
 import 'package:game/screen/game/game_view/game_item_view.dart';
 import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
 import 'package:game/screen/screen_logic.dart';
-import 'package:game/screen/study/study_logic.dart';
-import 'package:game/screen/study/study_progress.dart';
-import 'package:game/screen/test/test_logic.dart';
+import 'package:game/screen/study_logic/study_logic.dart';
+import 'package:game/screen/study_logic/study_progress.dart';
+import 'package:game/screen/test_logic/test_logic.dart';
 import 'package:game/utils/constant.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +51,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _animation;
   late Animation<Offset> _animation2;
-
+  late Timer _timer;
+  int _start = 5400;
   @override
   void initState() {
     if (gameType == GAME_STUDY_MODE) {
@@ -62,6 +65,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       screenLogic = TestLogic(
           context: context, topicId: topicId, subjectType: subjectType);
       gameModel = context.read<TestGameModel>();
+      startTimer();
     }
     screenLogic.loadData();
 
@@ -88,6 +92,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         List<NewSoundData> _sounds = [];
         gameModel.listGames!.forEach((element) {
           if (element.question.sound != "") {
+            // IELTS Speaking
             _sounds.add(NewSoundData.fromGameObject(
                 questionId: element.id,
                 sound: element.question.sound,
@@ -107,7 +112,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   orderIndex: element.parent!.orderIndex));
             }
           }
-          if (element is ParaGameObject && element.children.isNotEmpty && !paragraphAdded.contains(element.id)) {
+          if (element is ParaGameObject &&
+              element.children.isNotEmpty &&
+              !paragraphAdded.contains(element.id)) {
             paragraphAdded.add(element.id!);
             element.children.forEach((element) {
               if (element.question.sound != "") {
@@ -132,6 +139,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
   }
 
+  startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          if(mounted) {
+            setState(() {
+              (gameModel as TestGameModel).onFinish();
+              audioModel.reset();
+              Navigator.popAndPushNamed(context, ROUTER_RESULT_SCREEN);
+            });
+          }
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,14 +168,16 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         title: Text('Game'),
         actions: [
           gameType == GAME_TEST_MODE
-              ? FlatButton(
+              ? ElevatedButton(
                   onPressed: () {
                     (gameModel as TestGameModel).onFinish();
                     audioModel.reset();
                     Navigator.popAndPushNamed(context, ROUTER_RESULT_SCREEN);
                   },
-                  child: Text("Submit"),
-                  textColor: Colors.white,
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 )
               : Container()
         ],
@@ -165,7 +196,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           ElevatedButton(
                             child: Text('Continue'),
                             onPressed: () {
-                              screenLogic.navigateAfterFinishingStudy();
+                              // screenLogic.navigateAfterFinishingStudy();
+                              Navigator.pop(context);
                             },
                           ),
                         ],
@@ -177,6 +209,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   gameModel.previousGame = gameModel.currentGames;
                   return Column(
                     children: <Widget>[
+                      _buildTimer(),
                       Expanded(
                         child: _renderCurrentGame(
                           gameModel.currentGames,
@@ -204,7 +237,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           ElevatedButton(
                             child: Text('Continue'),
                             onPressed: () {
-                              screenLogic.navigateAfterFinishingStudy();
+                              // screenLogic.navigateAfterFinishingStudy();
+                              Navigator.pop(context);
                             },
                           ),
                         ],
@@ -217,7 +251,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
                   return Column(
                     children: <Widget>[
-                      _buildStudyProgress(),
+                      gameModel.currentGames is FlashGameObject
+                          ? _buildStudyProgress()
+                          : Container(),
                       Expanded(
                         child: _renderCurrentGame(
                           gameModel.currentGames,
@@ -232,6 +268,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               ),
       ),
     );
+  }
+
+  Container _buildTimer() {
+    int _minutes = _start ~/ 60;
+    int _seconds = _start % 60;
+    return Container(margin: EdgeInsets.only(top: 20),child: Text("Timer: $_minutes : $_seconds"));
   }
 
   _buildStudyProgress() {
@@ -254,6 +296,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       gameObject: _current,
       onAnswer: screenLogic.onAnswer,
       gameType: gameType,
+      gameSkill: _current.skill,
     );
   }
 
@@ -286,7 +329,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             type: QuizAnswerType.continue_click,
           );
           if (screenLogic.onAnswer != null) {
-            screenLogic.onAnswer(AnswerType.quiz, params);
+            if (currentGameModel!.currentGames is QuizGameObject) {
+              screenLogic.onAnswer(AnswerType.quiz, params);
+            } else if (currentGameModel.currentGames is FlashGameObject) {
+              screenLogic.onAnswer(AnswerType.flash);
+            }
           }
           screenLogic.onContinue();
         },
@@ -375,6 +422,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     gameModel.removeListener(listener);
     gameModel.resetListGame();
     audioModel.reset();
+    if (mounted) _timer.cancel();
     super.dispose();
   }
 }

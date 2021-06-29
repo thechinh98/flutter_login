@@ -16,9 +16,10 @@ import '../../../game_screen.dart';
 
 class ParagraphView extends StatefulWidget {
   final ParaGameObject gameObject;
-
+  final int gameSkill;
   ParagraphView({
     required this.gameObject,
+    required this.gameSkill,
   });
 
   @override
@@ -28,6 +29,7 @@ class ParagraphView extends StatefulWidget {
 class _ParagraphViewState extends State<ParagraphView> {
   final ScrollController _scrollController = ScrollController();
   late AudioModel audioModel;
+  int get gameSkill => widget.gameSkill;
   void scrollToBottom() {
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
@@ -52,7 +54,7 @@ class _ParagraphViewState extends State<ParagraphView> {
           controller: _scrollController,
           children: <Widget>[
             _renderSound(),
-            _buildSoundController(),
+            gameSkill != -400 ? _buildSoundController() : Container(),
             _renderParagraph(widget.gameObject),
             _renderImage(widget.gameObject),
             _buildHint(widget.gameObject),
@@ -65,22 +67,24 @@ class _ParagraphViewState extends State<ParagraphView> {
     });
   }
 
-  Container _renderParagraph(GameObject tempGameObject) {
-    return Container(
-      decoration: BoxDecoration(
-          color:
-              // set highlight base on orderIndex
-              audioModel.currentSound!.orderIndex ==
-                          tempGameObject.orderIndex &&
-                      tempGameObject.question.sound != ""
-                  ? Colors.amberAccent
-                  : Colors.white),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-      child: TextContent(
-        face: tempGameObject.question,
-        textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-    );
+  _renderParagraph(GameObject tempGameObject) {
+    return Consumer(builder: (_, AudioModel audioModel, __) {
+      return Container(
+        decoration: BoxDecoration(
+        color:
+        // set highlight base on orderIndex
+        audioModel.currentSound != null && audioModel.currentSound!.orderIndex ==
+                    tempGameObject.orderIndex &&
+                tempGameObject.question.sound != ""
+            ? Colors.amberAccent
+            : Colors.white),
+        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        child: TextContent(
+          face: tempGameObject.question,
+          textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      );
+    });
   }
 
   Container _renderAnswer(GameObject tempGameObject) {
@@ -89,11 +93,11 @@ class _ParagraphViewState extends State<ParagraphView> {
       decoration: BoxDecoration(
           color:
               // set highlight base on orderIndex
-              audioModel.currentSound!.orderIndex ==
+             audioModel.currentSound != null && audioModel.currentSound!.orderIndex ==
                       tempGameObject.orderIndex! + 0.05
                   ? Colors.amberAccent
                   : Colors.white),
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: TextContent(
         face: Face(content: choice.content),
         textStyle: TextStyle(fontSize: 20),
@@ -110,18 +114,20 @@ class _ParagraphViewState extends State<ParagraphView> {
           style: ButtonStyle(
             foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
             overlayColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
+              (Set<MaterialState> states) {
                 if (states.contains(MaterialState.hovered))
                   return Colors.blue.withOpacity(0.04);
                 if (states.contains(MaterialState.focused) ||
-                    states.contains(MaterialState.pressed))
-                  return Colors.blue.withOpacity(0.12);
+                    states.contains(MaterialState.pressed)) return Colors.blue;
+                if (states.contains(MaterialState.selected)) {
+                  return Colors.amber;
+                }
                 return Colors.white; // Defer to the widget's default.
               },
             ),
           ),
           onPressed: () {
-            if(speed == 0.25){
+            if (speed == 0.25) {
               return;
             } else {
               speed = 0.25;
@@ -132,7 +138,7 @@ class _ParagraphViewState extends State<ParagraphView> {
         ),
         TextButton(
           onPressed: () {
-            if(speed == 0.5){
+            if (speed == 0.5) {
               return;
             } else {
               speed = 0.5;
@@ -172,7 +178,7 @@ class _ParagraphViewState extends State<ParagraphView> {
         ),
         TextButton(
           onPressed: () {
-            if(speed == 2){
+            if (speed == 2) {
               return;
             } else {
               speed = 2;
@@ -183,7 +189,7 @@ class _ParagraphViewState extends State<ParagraphView> {
         ),
         TextButton(
           onPressed: () {
-            if(speed == 4){
+            if (speed == 4) {
               return;
             } else {
               speed = 4;
@@ -226,6 +232,7 @@ class _ParagraphViewState extends State<ParagraphView> {
                   _renderAnswer(indexGameObject),
                   // _buildHint(indexGameObject),
                   // _renderImage(indexGameObject),
+                  SizedBox(height: 10,)
                 ],
               ),
             );

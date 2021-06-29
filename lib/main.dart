@@ -7,6 +7,8 @@ import 'package:flutter_login/screens/home_screen.dart';
 import 'package:game/repository/sql_repository.dart';
 import 'package:provider/provider.dart';
 
+import 'screens/login_screen.dart';
+
 void main() async {
   SQLiteRepository sqLiteRepository = new SQLiteRepository();
   await sqLiteRepository.initDb();
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigationService.navigationKey,
         onGenerateRoute: generateRoute,
-        home: HomeScreen(),
+        home: LoginScreen(),
       ),
     );
   }
