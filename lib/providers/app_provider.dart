@@ -6,6 +6,7 @@ import 'package:game/providers/game_model.dart';
 import 'package:game/providers/score_model.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
+import 'package:game/providers/user_model.dart';
 import 'package:game/service/game_service_impl.dart';
 import 'package:game/service/service.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ class AppProvider {
   late AudioModel audioModel;
   late TestGameModel testGameModel;
   late ScoreModel scoreModel;
+  late UserModel userModel;
 
   late DatabaseService _dbService;
   late LoginService _loginService;
@@ -40,14 +42,15 @@ class AppProvider {
     loginModel = LoginModel();
     audioModel = AudioModel();
     scoreModel = ScoreModel();
+    userModel = UserModel();
 
     final gameService = GameServiceImpl();
     GameServiceInitializer().init(gameService);
+
     studyGameModel = StudyGameModel();
     testGameModel = TestGameModel();
     _dbService = FirebaseServiceImpl();
     _loginService = LoginServiceImpl(dbService);
-
 
   }
 
@@ -58,6 +61,7 @@ class AppProvider {
     ChangeNotifierProvider(create: (_) => studyGameModel),
     ChangeNotifierProvider(create: (_) => testGameModel),
     ChangeNotifierProvider(create: (_) => scoreModel),
+    ChangeNotifierProvider(create: (_) => userModel),
   ];
   LoginService get loginService => _loginService;
   DatabaseService get dbService => _dbService;

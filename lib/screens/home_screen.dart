@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
 import 'package:flutter_login/utils/constant.dart';
+import 'package:game/providers/user_model.dart';
 import 'package:game/screen/game_screen.dart';
 import 'package:game/utils/constant.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String testTopicId = "5757482593943552";
     LoginModel _loginModel = Provider.of<LoginModel>(context, listen: false);
+    UserModel _userModel = Provider.of<UserModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Xin chào, ${_loginModel.account.username ?? ''}", style: TextStyle(fontSize: 20),),
+                  Text("Xin chào, ${_userModel.currentUser!.userName ?? ''}", style: TextStyle(fontSize: 20),),
                   SizedBox(height: 90,),
                   // Container(
                   //   padding: EdgeInsets.symmetric(horizontal: 20),

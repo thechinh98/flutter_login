@@ -2,6 +2,7 @@ import 'package:auth/login/login_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/navigation/routes.dart';
+import 'package:game/providers/user_model.dart';
 import 'package:game/route/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isNotEmpty = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -91,11 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  logInSuccess(String userId, String password) async{
+  logInSuccess(String username, String password) async{
     await Future.delayed(Duration(milliseconds: 700));
     LoginModel _loginModel =
     Provider.of<LoginModel>(context, listen: false);
-    _loginModel.loginSuccess(userId, password);
+    UserModel _userModel = Provider.of<UserModel>(context, listen: false);
+    _loginModel.loginSuccess(username, password);
+    _userModel.loadUserData(id: 1);
     NavigationService().pushReplacementNamed(ROUTER_HOME);
   }
   void availableLogin() {

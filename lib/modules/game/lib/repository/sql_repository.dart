@@ -5,7 +5,9 @@ import 'package:database/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:game/model/core/question.dart';
+import 'package:game/model/core/user.dart';
 import 'package:game/model/database_model/question_database.dart';
+import 'package:game/model/database_model/user_database.dart';
 import 'package:game/utils/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -31,21 +33,24 @@ class SqfliteRepository {
   String toeicAppDbName = 'toeic-$DB_VERSION.db';
   String toeicDbName = 'toeic.db';
 
-  String userAppDbName = 'user_data-$DB_VERSION.db';
-  String userDbName = 'user_data.db';
+  String userAppDbName = 'user-$DB_VERSION.db';
+  String userDbName = 'user.db';
 
   String ieltsAppDbName = 'ielts-$DB_VERSION.db';
   String ieltsDataDbName = 'ielts.db';
   String userIeltsDbName = 'user_ielts_data.db';
+
   Database get toeicDb => _toeicDb!;
+
   Database get ieltsDB => _ieltsDb!;
+
   Database get userDataDb => _userDb!;
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _checkAndCopyToeicDatabase();
     await _checkAndCopyIeltsDatabase();
-    await -_checkAndCopyUserDatabase();
+    await _checkAndCopyUserDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, toeicAppDbName);
     String pathIelts = join(documentsDirectory.path, ieltsAppDbName);
@@ -54,6 +59,7 @@ class SqfliteRepository {
     _toeicDb = await openDatabase(path);
     _ieltsDb = await openDatabase(pathIelts);
     _userDb = await openDatabase(pathUser);
+
     await _createTable(_toeicDb);
     await _createTable(_ieltsDb);
     await _createTable(_userDb);
@@ -93,18 +99,19 @@ class SqfliteRepository {
           "dbName found $toeicAppDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
-  _checkAndCopyUserDatabase() async{
+
+  _checkAndCopyUserDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = documentsDirectory.listSync();
     for (var file in files) {
       String fileName = file.path.split('/').last;
       if (fileName.endsWith('.db') &&
-          fileName.startsWith('user_data') &&
-          !fileName.startsWith('user_data-$DB_VERSION.db')) {
+          fileName.startsWith('user') &&
+          !fileName.startsWith('user-$DB_VERSION.db')) {
         file.deleteSync(recursive: true);
       }
     }
-    String path = join(documentsDirectory.path, toeicAppDbName);
+    String path = join(documentsDirectory.path, userDbName);
     print("path: $path");
     // Only copy if the database doesn't exist
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
@@ -119,7 +126,7 @@ class SqfliteRepository {
         data = await rootBundle.load(join('assets/data/', userDbName));
       }
       List<int> bytes =
-      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Save copied asset to documents
       await new File(path).writeAsBytes(bytes);
     } else {
@@ -127,6 +134,7 @@ class SqfliteRepository {
           "dbName found $userDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
+
   _checkAndCopyIeltsDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = documentsDirectory.listSync();
@@ -153,7 +161,7 @@ class SqfliteRepository {
         data = await rootBundle.load(join('assets/data/', ieltsDataDbName));
       }
       List<int> bytes =
-      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       // Save copied asset to documents
       await new File(path).writeAsBytes(bytes);
       print(
@@ -181,9 +189,9 @@ class SqfliteRepository {
     sql = sql.substring(0, sql.length - 1);
     sql += ')';
     Database? _tempDb;
-    if(subjectType == ieltsSubject){
+    if (subjectType == ieltsSubject) {
       _tempDb = _ieltsDb;
-    } else if(subjectType == toeicSubject){
+    } else if (subjectType == toeicSubject) {
       _tempDb = _toeicDb;
     }
     List<Map<String, dynamic>> maps = await requestApi<
@@ -199,8 +207,7 @@ class SqfliteRepository {
         if (parentOrderIndex < 0) {
           parentOrderIndex = 0;
         }
-        question.orderIndex =
-            parentOrderIndex + (question.orderIndex!) / 10;
+        question.orderIndex = parentOrderIndex + (question.orderIndex!) / 10;
         // print(parentOrderIndex);
         results.add(question);
       });
@@ -212,9 +219,9 @@ class SqfliteRepository {
       {required String parentId, required int subjectType}) async {
     List<Question> result = [];
     Database? _tempDb;
-    if(subjectType == ieltsSubject){
+    if (subjectType == ieltsSubject) {
       _tempDb = _ieltsDb;
-    } else if(subjectType == toeicSubject){
+    } else if (subjectType == toeicSubject) {
       _tempDb = _toeicDb;
     }
     final maps = await requestApi<List<Map>, List<Map>>(
@@ -239,12 +246,12 @@ class SqfliteRepository {
   }
 
   Future<List<Question>> loadTestQuestionsByParentId(
-      {required String parentId,required gameType}) async {
+      {required String parentId, required gameType}) async {
     Database? _tempDb;
     List<Question> result = [];
-    if(gameType == ieltsSubject){
+    if (gameType == ieltsSubject) {
       _tempDb = _ieltsDb;
-    } else if(gameType == toeicSubject){
+    } else if (gameType == toeicSubject) {
       _tempDb = _toeicDb;
     }
     final maps = await requestApi<List<Map>, List<Map>>(
@@ -264,5 +271,22 @@ class SqfliteRepository {
     return result;
   }
 
-
+  Future<User>  loadUserByUsername({required int id}) async {
+    User user = User();
+    List<User> users = [];
+    final maps = await requestApi(
+        call: () =>
+            _userDb!.query("$tableUser", where: '"id" = $id'),
+        defaultValue: []);
+    if (maps.length == 1) {
+      for (var item in maps) {
+        User user = User.fromJson(item);
+        users.add(user);
+      }
+    } else {
+      print("Duplicated username");
+    }
+    user = users[0];
+    return user;
+  }
 }

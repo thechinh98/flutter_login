@@ -1,4 +1,5 @@
 import 'package:game/model/core/question.dart';
+import 'package:game/model/core/user.dart';
 import 'package:game/repository/sql_repository.dart';
 import 'package:game/route/router_service.dart';
 import 'package:game/route/routes.dart';
@@ -28,6 +29,11 @@ class GameServiceImpl implements GameService {
     // NavigationService().pushNamedAndRemoveUntil(
     //     ROUTER_RESULT_SCREEN, (route) => route.settings.name == ROUTER_HOME);
     NavigationService().pop();
+  }
+
+  @override
+  Future<User> loadUserById({required int id}) async {
+    return await SqfliteRepository().loadUserByUsername(id: id);
   }
 
 }
