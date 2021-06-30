@@ -271,12 +271,12 @@ class SqfliteRepository {
     return result;
   }
 
-  Future<User>  loadUserByUsername({required int id}) async {
+  Future<User>  loadUserByUsername({required String username}) async {
     User user = User();
     List<User> users = [];
     final maps = await requestApi(
         call: () =>
-            _userDb!.query("$tableUser", where: '"id" = $id'),
+            _userDb!.query("$tableUser", where: '"username" = "$username"'),
         defaultValue: []);
     if (maps.length == 1) {
       for (var item in maps) {

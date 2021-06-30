@@ -1,12 +1,12 @@
 class DoneTest{
-  int? id;
-  int? point;
-  String? name;
+  int id = 0;
+  int point = 0;
+  String title = "";
 
-  DoneTest({this.id, this.name, this.point});
+  DoneTest({required this.id,required this.title,required this.point});
   DoneTest.fromJson(Map<String, dynamic> json){
     id = json["id"] as int;
     point = json["point"] as int;
-    name = json["name"] as String;
+    title = json["name"] as String;
   }
 }

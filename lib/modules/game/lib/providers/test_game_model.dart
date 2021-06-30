@@ -1,3 +1,5 @@
+import 'package:database/database_service.dart';
+import 'package:database/firebase_data_service_impl.dart';
 import 'package:game/model/core/choice.dart';
 import 'package:game/model/core/question.dart';
 import 'package:game/model/database_model/question_database.dart';
@@ -15,6 +17,8 @@ class TestGameModel extends GameModel implements GamePlay {
   int indexQuestion = -1;
   int correctReadingAnswer = 0;
   int correctListeningAnswer = 0;
+  String topicName = '';
+  DatabaseService dbService = FirebaseServiceImpl();
   TestGameModel() {
     this.gameService = GameServiceInitializer().gameService;
   }
@@ -28,6 +32,7 @@ class TestGameModel extends GameModel implements GamePlay {
     print("CHINHLT: TestGameModel - load data - topic ID: $topicId");
     questionsDb =
         await gameService.loadTestQuestionsByParentId(parentId: topicId, subjectType: subjectType);
+    topicName = await dbService.getTopicNameById(topicId);
     Map<String, Question> mapQuestionHasChild = {};
     questionsDb.forEach((element) {
       if (element.hasChild) {

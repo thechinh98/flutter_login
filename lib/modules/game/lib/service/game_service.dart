@@ -6,6 +6,6 @@ abstract class GameService {
   Future<List<Question>> loadTestQuestionsByParentId({required String parentId, required int subjectType});
   Future<List<Question>> loadChildQuestionList(
       Map<String, Question> mapHasChild, int subjectType);
-  Future<User> loadUserById({required int id});
+  Future<User> loadUserByUsername({required String username});
   navigateAfterFinishingStudy();
 }

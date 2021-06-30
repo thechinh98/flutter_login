@@ -3,6 +3,9 @@ import 'package:database/sql_repository.dart';
 import 'package:database/topic_item_view.dart';
 import 'package:database/topic_model.dart';
 import 'package:flutter/material.dart';
+import 'package:game/model/core/topic.dart';
+import 'package:game/model/core/user.dart';
+import 'package:game/providers/user_model.dart';
 import 'package:game/screen/game_screen.dart';
 import 'package:game/utils/constant.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +34,6 @@ class _TopicListScreenState extends State<TopicListScreen> {
   String get parentId => widget.parentId;
   @override
   void initState() {
-    print(
-        "CHINHLT: Topic List Screen - init state: Topic mode: ${context.read<TopicModel>()}");
     topicModel = context.read<TopicModel>();
     topicModel.loadData(type: type, gameType: subjectType, parentId: parentId);
     super.initState();
@@ -46,17 +47,21 @@ class _TopicListScreenState extends State<TopicListScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Consumer<TopicModel>(builder: (context, _topicModel, child) {
+        child: Consumer2<TopicModel, UserModel>(builder: (context, _topicModel, _userModel, child) {
           return SizedBox(
             width: double.infinity,
             child: _topicModel.topics.isNotEmpty
                 ? ListView.builder(
                     itemCount: _topicModel.topics.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        TopicItemView(
-                            topicNumber: _topicModel.topics[index].title!
+                    itemBuilder: (BuildContext context, int index) {
+                      Topic currentTopic = _topicModel.topics[index];
+                      User currentUser = _userModel.currentUser!;
+                       return  TopicItemView(
+                            isMain: currentTopic.isMain,
+                            isLearned: (currentUser.listPracticeDone.contains(int.parse(currentTopic.id!)) || (currentUser.checkIdTestDone(int.parse(currentTopic.id!)))),
+                            topicNumber: currentTopic.title!
                                 .replaceAll("\n", " "),
-                            topicDetail: _topicModel.topics[index].shortDes!,
+                            topicDetail: currentTopic.shortDes!,
                             press: () {
                               if (subjectType == ieltsSubject && type == 1) {
                                 Navigator.pushReplacement(
@@ -64,10 +69,10 @@ class _TopicListScreenState extends State<TopicListScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => TopicListScreen(
                                       title:
-                                          "IELTS ${_topicModel.topics[index].title!}",
+                                          "IELTS ${currentTopic.title!}",
                                       subjectType: ieltsSubject,
                                       type: 2,
-                                      parentId: _topicModel.topics[index].id!,
+                                      parentId: currentTopic.id!,
                                     ),
                                   ),
                                 );
@@ -76,7 +81,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => GameScreen(
-                                      topicId: _topicModel.topics[index].id!,
+                                      topicId: currentTopic.id!,
                                       gameType: GAME_TEST_MODE,
                                       subjectType: subjectType,
                                     ),
@@ -87,15 +92,15 @@ class _TopicListScreenState extends State<TopicListScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => GameScreen(
-                                      topicId: _topicModel.topics[index].id!,
+                                      topicId: currentTopic.id!,
                                       gameType: GAME_STUDY_MODE,
                                       subjectType: subjectType,
                                     ),
                                   ),
                                 );
                               }
-                            }),
-                  )
+                            });
+                  })
                 : Center(
                     child: CircularProgressIndicator(),
                   ),

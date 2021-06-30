@@ -4,6 +4,8 @@ import 'package:game/model/core/barem_score.dart';
 
 class ScoreModel extends ChangeNotifier{
   List<BaremScores> baremScore = <BaremScores> [];
+  String testTitle = "";
+  int? testId;
   int readingScore = 0;
   int readingCorrect = 0;
   int listeningScore = 0;
@@ -31,5 +33,13 @@ class ScoreModel extends ChangeNotifier{
         notifyListeners();
       }
     });
+  }
+  getTestId(int id){
+    testId = id;
+    notifyListeners();
+  }
+  getTestName(String name){
+    testTitle = name;
+    notifyListeners();
   }
 }

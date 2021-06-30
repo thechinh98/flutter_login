@@ -5,6 +5,7 @@ import 'package:flutter_login/navigation/router_service.dart';
 import 'package:flutter_login/providers/app_provider.dart';
 import 'package:flutter_login/screens/home_screen.dart';
 import 'package:game/repository/sql_repository.dart';
+import 'package:game/screen/test_progress/progress_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/login_screen.dart';

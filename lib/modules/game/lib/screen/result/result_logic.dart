@@ -18,11 +18,19 @@ class ResultLogic {
     await scoreModel.loadBaremScore();
     getListeningScore();
     getReadingScore();
+    getTestName();
+    getTestId();
   }
   getListeningScore(){
     scoreModel.getListeningScore(testGameModel.correctListeningAnswer);
   }
   getReadingScore(){
     scoreModel.getReadingScore(testGameModel.correctReadingAnswer);
+  }
+  getTestId(){
+    scoreModel.getTestId(int.parse(testGameModel.currentTopic));
+  }
+  getTestName(){
+    scoreModel.getTestName(testGameModel.topicName);
   }
 }

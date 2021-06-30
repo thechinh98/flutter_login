@@ -5,6 +5,7 @@ import 'package:flutter_login/screens/home_screen.dart';
 import 'package:flutter_login/screens/login_screen.dart';
 import 'package:game/route/routes.dart';
 import 'package:game/screen/result/result_screen.dart';
+import 'package:game/screen/test_progress/progress_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   Map<String, dynamic>? arguments = settings.arguments as Map<String, dynamic>?;
@@ -19,6 +20,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(routeName: settings.name!, viewToShow: HomeScreen());
     case ROUTER_RESULT_SCREEN:
       return _getPageRoute(routeName: settings.name!, viewToShow: ResultScreen());
+    case ROUTER_PROGRESS_SCREEN:
+      return _getPageRoute(routeName: settings.name!, viewToShow: ProgressScreen());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

@@ -9,6 +9,7 @@ class Topic {
   int? type;
   int? practiceMode;
   int? indexes;
+  bool isMain = false;
   Topic(
       {this.id,
       this.title,
@@ -32,5 +33,6 @@ class Topic {
     type = map[typeColumn];
     practiceMode = map[practiceModeColumn];
     indexes = map[indexesColumn];
+    isMain = type == 1 && shortDes == ""; // check Main or not
   }
 }

@@ -21,6 +21,7 @@ dependencies:
   flutter_widget_from_html: ^0.6.0-rc.2021031201
   cached_network_image: ^3.0.0-nullsafety
   collection: ^1.15.0-nullsafety.4
+  fl_chart: ^0.36.2
   database:
     path: ../database/
 

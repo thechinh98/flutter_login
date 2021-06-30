@@ -23,7 +23,7 @@ class User{
       listTest = json.decode(map[listTestDoneColumn]);
     }
     for(int i = 0; i<listTest.length;i++){
-      DoneTest doneTest = DoneTest(id: listTest[i][idField], name: listTest[i][nameField], point: listTest[i][pointField]);
+      DoneTest doneTest = DoneTest(id: listTest[i][idField], title: listTest[i][titleField], point: listTest[i][pointField]);
       listTestDone.add(doneTest);
     }
   }
@@ -36,4 +36,13 @@ class User{
       listPracticeDone.add(int.parse(listPractice[i].toString()));
     }
   }
+  bool checkIdTestDone(int id){
+    for(var item in listTestDone){
+      if(item.id == id){
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Provider.of<LoginModel>(context, listen: false);
     UserModel _userModel = Provider.of<UserModel>(context, listen: false);
     _loginModel.loginSuccess(username, password);
-    _userModel.loadUserData(id: 1);
+    _userModel.loadUserData(username: username);
     NavigationService().pushReplacementNamed(ROUTER_HOME);
   }
   void availableLogin() {

@@ -33,14 +33,10 @@ class FirebaseServiceImpl implements DatabaseService {
         call: () => tempDB!.query("$tableTopic",
             where: conditionString,
             orderBy: "CAST(substr(title, instr(title, ' ')) as INTEGER)"),
-        defaultValue: []).then((value){
-    });
+        defaultValue: []);
     if (maps.length > 0) {
       for (var item in maps) {
         Topic topic = Topic.fromJson(item);
-        if(){
-          topic.
-        }
         topics.add(topic);
       }
     }
@@ -61,5 +57,22 @@ class FirebaseServiceImpl implements DatabaseService {
       }
     }
     return users;
+  }
+
+  @override
+  Future<String> getTopicNameById(String id) async {
+    List<Topic> topics = [];
+    final maps = await requestApi(
+        call: () => _db.query("$tableTopic",
+            where: '"id" = $id',
+        ),
+        defaultValue: []);
+    if (maps.length > 0) {
+      for (var item in maps) {
+        Topic topic = Topic.fromJson(item);
+        topics.add(topic);
+      }
+    }
+    return Future.value(topics[0].title);
   }
 }

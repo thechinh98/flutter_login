@@ -32,8 +32,8 @@ class GameServiceImpl implements GameService {
   }
 
   @override
-  Future<User> loadUserById({required int id}) async {
-    return await SqfliteRepository().loadUserByUsername(id: id);
+  Future<User> loadUserByUsername({required String username}) async {
+    return await SqfliteRepository().loadUserByUsername(username: username);
   }
 
 }

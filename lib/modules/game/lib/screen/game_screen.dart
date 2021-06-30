@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:game/providers/game_model.dart';
 import 'package:game/providers/study_game_model.dart';
 import 'package:game/providers/test_game_model.dart';
+import 'package:game/providers/user_model.dart';
 import 'package:game/route/routes.dart';
 import 'package:game/screen/game/game_view/game_item_view.dart';
 import 'package:game/screen/game/game_view/quiz/quiz_view.dart';
@@ -225,8 +226,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   );
                 },
               )
-            : Consumer(
-                builder: (_, StudyGameModel gameModel, __) {
+            : Consumer2<StudyGameModel, UserModel>(
+                builder: (_, gameModel, userModel, __) {
                   if (gameModel.isFinishGame) {
                     return Center(
                       child: Column(
@@ -239,6 +240,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                             onPressed: () {
                               // screenLogic.navigateAfterFinishingStudy();
                               Navigator.pop(context);
+                              userModel.addPracticeDone(int.parse(gameModel.currentTopic));
                             },
                           ),
                         ],
