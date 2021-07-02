@@ -25,8 +25,8 @@ class SQLiteRepository{
   Database? _db;
   Database? _ieltsDb;
   Database? _userDb;
-  String appDbName = 'data-$DB_VERSION.db';
-  String dataDbName = 'data.db';
+  String appDbName = 'toeic-$DB_VERSION.db';
+  String dataDbName = 'toeic.db';
 
   String userAppDbName = 'user-$DB_VERSION.db';
   String userDbName = 'user.db';
@@ -40,7 +40,7 @@ class SQLiteRepository{
 
   Future initDb() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await _checkAndCopyDatabase();
+    await _checkAndCopyToeicDatabase();
     await _checkAndCopyIeltsDatabase();
     await _checkAndCopyUserDatabase();
 
@@ -93,7 +93,7 @@ class SQLiteRepository{
           "dbName found $userAppDbName documentsDirectory.path: ${documentsDirectory.path}");
     }
   }
-  _checkAndCopyDatabase() async {
+  _checkAndCopyToeicDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     List<FileSystemEntity> files = documentsDirectory.listSync();
     for (var file in files) {
@@ -114,7 +114,7 @@ class SQLiteRepository{
       ByteData data;
       try {
         data = await rootBundle
-            .load(join('packages/database/assets/data/', dataDbName));
+            .load(join('packages/game/assets/data/', dataDbName));
       } catch (e) {
         data = await rootBundle.load(join('assets/data/', dataDbName));
       }

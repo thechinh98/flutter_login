@@ -5,6 +5,7 @@ import 'package:game/model/core/done_test.dart';
 import 'package:game/providers/score_model.dart';
 import 'package:game/providers/test_game_model.dart';
 import 'package:game/providers/user_model.dart';
+import 'package:game/screen/result/result_bar_chart.dart';
 import 'package:game/screen/result/result_logic.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -26,7 +27,10 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: Container(),
+        title: Text("Test result"),
+      ),
       body: SafeArea(
         child: Consumer2<ScoreModel, UserModel>(
           builder: (_,scoreModel, userModel, __){
@@ -37,6 +41,8 @@ class _ResultScreenState extends State<ResultScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  ResultBarChart(listScore: scoreModel.listTestScore,),
+                  SizedBox(height: 30,),
                   Text("TEST TITLE: ${scoreModel.testTitle}"),
                   Text("CORRECT READING ANSWER: ${scoreModel.readingCorrect}"),
                   Text("CORRECT LISTENING ANSWER: ${scoreModel.listeningCorrect}"),

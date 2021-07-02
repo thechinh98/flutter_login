@@ -1,3 +1,4 @@
+import 'package:database/constant.dart';
 import 'package:database/database_service.dart';
 import 'package:database/firebase_data_service_impl.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,9 @@ class TopicModel extends ChangeNotifier {
         if(type == 1 && element.shortDes!.isEmpty) {
           return;
         } else {
+          if(type == 1 && gameType == ieltsSubject){
+            element.isMain = true;
+          }
           topics.add(element);
         }
       });

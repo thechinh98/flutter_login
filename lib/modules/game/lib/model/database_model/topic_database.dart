@@ -8,6 +8,7 @@ final String descriptionColumn = "shortDes";
 final String typeColumn = "type";
 final String practiceModeColumn = "practiceMode";
 final String indexesColumn = "indexes";
+final String levelColumn = "level";
 final String createTopicTable = 'create table IF NOT EXIST $tableTopic ('
     '$columnId text primaryKey,'
     '$columnTitle text not null'

@@ -8,6 +8,7 @@ import 'package:game/providers/study_game_model.dart';
 import 'package:game/screen/game/game_view/game_item_view.dart';
 import 'package:provider/provider.dart';
 import '../../../game_screen.dart';
+
 class FlashCardView extends StatefulWidget {
   final FlashGameObject gameObject;
   final OnAnswer? onAnswer;
@@ -58,7 +59,9 @@ class _FlashCardViewState extends State<FlashCardView> {
               height: 20,
             ),
             _renderDoneButton(),
-            SizedBox(height: 20,)
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
@@ -75,19 +78,25 @@ class _FlashCardViewState extends State<FlashCardView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Center(
             child: AutoSizeText(
               gameObject.question.content!,
               maxLines: 1,
               maxFontSize: 55,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 55, fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontSize: 55, fontWeight: FontWeight.bold),
             ),
           ),
           Center(
             child: TextContent(
               face: gameObject.hint!,
-              textStyle: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 40),
+              textStyle:
+                  Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 40),
             ),
           ),
           Container(child: null)
@@ -120,6 +129,15 @@ class _FlashCardViewState extends State<FlashCardView> {
               textStyle: TextStyle(fontSize: 20, fontStyle: FontStyle.italic),
             ),
           ),
+          SizedBox(height: 10,),
+          (gameObject.question.image != null && gameObject.question.image != "")
+              ? Image.network(
+                  gameObject.question.image!,
+                  fit: BoxFit.fill,
+                  width: 80,
+                  height: 180,
+                )
+              : Container()
         ],
       ),
     );
@@ -164,17 +182,14 @@ class _FlashCardViewState extends State<FlashCardView> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-              color:
-              Color(0xff7DDE9E),
+              color: Color(0xff7DDE9E),
               border: Border.all(
                 color: Colors.green[500]!,
               ),
               borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Center(
             child: Text(
-              isFront
-                  ? 'Click to show explain and example'
-                  : 'Done',
+              isFront ? 'Click to show explain and example' : 'Done',
               style: TextStyle(color: Colors.white),
             ),
           ),

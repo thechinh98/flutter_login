@@ -62,6 +62,7 @@ class _TopicListScreenState extends State<TopicListScreen> {
                             topicNumber: currentTopic.title!
                                 .replaceAll("\n", " "),
                             topicDetail: currentTopic.shortDes!,
+                            level: currentTopic.level ?? "",
                             press: () {
                               if (subjectType == ieltsSubject && type == 1) {
                                 Navigator.pushReplacement(
